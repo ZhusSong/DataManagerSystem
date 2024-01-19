@@ -1,13 +1,16 @@
 ﻿#pragma once
+
 //****************
-//登录界面头文件
+//加载界面头文件
 //****************
 #include "BasicWindow.h"
-class LoginWindow:public BasicWindow
+class LoadWindow :public BasicWindow
 {
+
+
 private:
 
 public:
-	LoginWindow();
-	~LoginWindow();
+	LoadWindow();
+	~LoadWindow();
 };

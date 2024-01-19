@@ -13,24 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{c5f7b6ab-4f92-4e1a-a2b0-f280e7e72f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{6ad9ed16-d4e6-4f9f-ac03-b9ee33dc077e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Login">
+      <UniqueIdentifier>{86cf7477-7e86-4cf1-868e-a9b19947f9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Load">
+      <UniqueIdentifier>{f8a59ee4-014b-4846-8db3-9b0ef50046ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinMain.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsManager.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="LoginWindow.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Windows\Login</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadWindow.cpp">
+      <Filter>Windows\Load</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataManager.h">
-      <Filter>头文件</Filter>
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="LoginWindow.h">
-      <Filter>头文件</Filter>
+      <Filter>Windows\Login</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadWindow.h">
+      <Filter>Windows\Load</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,25 +1,27 @@
-#include "Polyhead.h"
+ï»¿#include "Polyhead.h"
 
 #define N 1000   // number of points max 1000
 int COLOR[16]={BLACK,BLUE,GREEN,CYAN,RED,MAGENTA,BROWN,LIGHTGRAY,DARKGRAY,LIGHTBLUE,LIGHTGREEN,LIGHTCYAN,LIGHTRED,LIGHTMAGENTA,YELLOW,WHITE};
-
-// Ö÷º¯Êı
+//å®šä¹‰çª—å£åˆ†è¾¨ç‡ä¸º1024*768
+#define WIDTH  1024;
+#define HEIGHT  768;
+// ï¾–î–ï½¯ï¾Šï£±
 int main()
 {
 	FILE *fp;
 	int i,datacount=0;
-	char ch[80], *filename="002.txt"; //¶ÁÈëµÄÊı¾İÎÄ¼şÃû³Æ
+	char ch[80], *filename="002.txt"; //ï½¶ï¾ï¾ˆãƒ»ï¾„ï¾Šï£±ï½¾ï¾ï¾ï¾„ï½¼ï£²ï¾ƒï¨¤ï¾†
 	double datax[N],datay[N],fity[N]; 
-	double fiterror;		// ÄâºÏÎó²î
-	int order,MaxOrder=7; // ¶àÏîÊ½µÄ½×´Î
+	double fiterror;		// ï¾„ç¯Œï¾ï¾îŠ¥ãƒ»
+	int order,MaxOrder=7; // ï½¶çŒ¾é‘…ï½½ï½µï¾„ï½½ï¾—ï½´ï¾
 	
 	POLYFITINFO pinfo;
 
-	PLOTAREA  parea={200,400,824,700}; // Ö±·½Í¼ÏÔÊ¾ÇøÓò£¬
-	PLOTAREA  farea={10,600,80,700};   // ÎÄ×ÖÏÔÊ¾ÇøÓò 
-	PLOTAREA dataarea={50,10,950,300}; // Êı¾İÇúÏßÏÔÊ¾ÇøÓò
+	PLOTAREA  parea={200,400,824,700}; // ï¾–ï½±ï½·ï½½ï¾ï½¼ï¾ï¾”ï¾Šï½¾ï¾‡î™²î‡šï½¬
+	PLOTAREA  farea={10,600,80,700};   // ï¾ï¾„ï¾—ï¾–ï¾ï¾”ï¾Šï½¾ï¾‡î™²ãƒ»
+	PLOTAREA dataarea={50,10,950,300}; // ï¾Šï£±ï½¾ï¾ï¾‡æ˜•ï¾Ÿï¾ï¾”ï¾Šï½¾ï¾‡î™²ãƒ»
 	
-	// ´ÓÊı¾İÎÄ¼ş¶ÁÈëÔ­Ê¼Êı¾İ£¬Ô­Ê¼Êı¾İµÄĞĞÊı²»ÄÜ³¬¹ıN
+	// ï½´ï¾“ï¾Šï£±ï½¾ï¾ï¾ï¾„ï½¼ï£²ï½¶ï¾ï¾ˆãƒ»ï½­ï¾Šï½¼ï¾Šï£±ï½¾ï¾ï½£ï½¬ï¾”ï½­ï¾Šï½¼ï¾Šï£±ï½¾ï¾ï½µï¾„ï¾ï¾ï¾Šï£±ï½²ï½»ï¾„ï¾œï½³ï½¬ï½¹ï£±N
 	if((fp=fopen(filename,"r+"))==NULL)
 	{
 		printf("Can not open file\n");
@@ -28,10 +30,10 @@ int main()
 	for(i=0;i<N;i++)
 	{
 		fscanf(fp,"%lf %lf",&datax[i],&datay[i]);
-		if(feof(fp)!=0) // Èç¹ûÒÑ¾­¶Áµ½ÎÄ¼şÄ©Î²£¬Í£Ö¹¶ÁÎÄ¼ş¡£
+		if(feof(fp)!=0) // ï¾ˆéƒ¢é‹ï¾‘ï½¾ï½­ï½¶ï¾ï½µï½½ï¾ï¾„ï½¼ï£²ï¾„ï½©ï¾ï½²ï½£ï½¬ï¾ï½£ï¾–ï½¹ï½¶ï¾ï¾ï¾„ï½¼ï£²ï½¡ï½£
 			break;
 	}
-	datacount=i; // Êı¾İµÄĞĞÊı¡£
+	datacount=i; // ï¾Šï£±ï½¾ï¾ï½µï¾„ï¾ï¾ï¾Šï£±ï½¡ï½£
 	fclose(fp);
 	
 	strcpy(pinfo.filename,filename);
@@ -39,17 +41,17 @@ int main()
 	pinfo.MaxOrder=MaxOrder;
 
 	//display data in the graphics window 
-	initgraph(1024, 768, EX_SHOWCONSOLE);			// ´´½¨»æÍ¼´°¿Ú
-	// »­³öÔ­Ê¼Êı¾İ.
+	initgraph(1024, 768, EX_SHOWCONSOLE);			// ï½´ï½´ï½½ï½¨ï½»è³šï½¼ï½´ï½°ï½¿ï¾š
+	// ï½»ï½­ï½³î“»ï½­ï¾Šï½¼ï¾Šï£±ï½¾ï¾.
 	showdata(datax,datay,datacount,RED,dataarea);
 	
-	// ÀûÓÃ×îĞ¡¶ş³ËÈ·¶¨¶àÏîÊ½ÄâºÏµÄÏµÊı
+	// ï¾€ï¨§ï¾ƒï¾—éš¯ï½¡ï½¶ï£²ï½³ï¾‹ï¾ˆï½·ï½¶ï½¨ï½¶çŒ¾é‘…ï½½ï¾„ç¯Œï¾ï½µï¾„ï¾ï½µï¾Šï£±
 	for(order=1;order<=MaxOrder;order++)
 	{
 		polyfit(datacount,datax,datay,order,pinfo.polyCoeff[order]);
 	}
 
-	// ¼ÆËã²¢¼ÇÂ¼ÄâºÏÎó²î£¬»­³öÄâºÏÇúÏß¡£
+	// ï½¼ï¾†ï¾‹ç¾‡ï½¢ï½¼ï¾‡ï¾‚ï½¼ï¾„ç¯Œï¾ï¾îŠ¥é‡¤ï½¬ï½»ï½­ï½³î“«ç¯Œï¾ï¾‡æ˜•ï¾Ÿï½¡ï½£
 	for(order=1;order<=MaxOrder;order++)
 	{
 		fiterror=0;
@@ -62,19 +64,19 @@ int main()
 		showdata(datax,fity,datacount,COLOR[order],dataarea);
 	}
 
-	// ÓÃÖ±·½Í¼±íÊ¾²»Í¬½×´ÎµÄÄâºÏÎó²î¡£
-	showhisto(pinfo.fitError,MaxOrder,parea); // ÔÚparea ÏÔÊ¾Ö±·½Í¼
+	// ï¾“ï¾ƒï¾–ï½±ï½·ï½½ï¾ï½¼ï½±æ¡„ï½¾ï½²ï½»ï¾ï½¬ï½½ï¾—ï½´ï¾ï½µï¾„ï¾„ç¯Œï¾ï¾îŠ¥é‡­ï½£
+	showhisto(pinfo.fitError,MaxOrder,parea); // ï¾”ï¾šparea ï¾ï¾”ï¾Šï½¾ï¾–ï½±ï½·ï½½ï¾ï½¼
 
-	// ÊäÈë×î¼ÑµÄ¶àÏîÊ½ÄâºÏ½×´Î¡£
+	// ï¾Šè ãƒ»éŒ¡ï¾‘ï½µï¾„ï½¶çŒ¾é‘…ï½½ï¾„ç¯Œï¾ï½½ï¾—ï½´ï¾ï½¡ï½£
 	printf("\nPress enter the best order of polynormial:");
 	fflush(stdin);
 	scanf("%d",&pinfo.OptiOrder);
 
-	// ½«´¦ÀíµÄ¹ı³Ì½øĞĞ×Ü½á¡£
-	showpinfo(pinfo,farea);  // ÔÚfarea ÏÔÊ¾Êı¾İÎÄ¼şĞÅÏ¢
+	// ï½½ï½«ï½´ï½¦ï¾€æ˜‰ï¾„ï½¹ï£±ï½³ï¾Œï½½î™¯ï¾ï¾—ï¾œï½½ç™¸ï½£
+	showpinfo(pinfo,farea);  // ï¾”ï¾šfarea ï¾ï¾”ï¾Šï½¾ï¾Šï£±ï½¾ï¾ï¾ï¾„ï½¼ï£²ï¾ï¾…ï¾ï½¢
 	printf("\nPress any key to exit...");
 	fflush(stdin);
 	getchar();
-	closegraph();					// ¹Ø±Õ»æÍ¼´°¿Ú
+	closegraph();					// ï½¹ï¾˜ï½±ï¾•ï½»è³šï½¼ï½´ï½°ï½¿ï¾š
 	return 0;
 }

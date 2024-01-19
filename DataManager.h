@@ -1,6 +1,6 @@
-#pragma once
+ï»¿#pragma once
 //****************
-//Êı¾İ¹ÜÀí¿ò¼ÜÓëÊı¾İ²Ù×÷º¯Êı
+//ä¿¡æ¯ç®¡ç†ç³»ç»Ÿå¤´æ–‡ä»¶ï¼Œè´Ÿè´£æ•°æ®å¤„ç†
 //****************
 #include <iostream>
 #include <stdlib.h>
@@ -12,35 +12,92 @@
 #include <stdio.h>
 using namespace std;
 
-//×î´ó¿É´¦ÀíÊı¾İÌõÊı
+//æœ€å¤§æ–‡ä»¶æ¡æ•°îµï£±
 #define N 999 
+//å®šä¹‰çª—å£åˆ†è¾¨ç‡ä¸º1024*768
+#define WIDTH  1024
+#define HEIGHT  768
+//æ‰€éœ€é¢œè‰²å®šä¹‰
+enum Colors
+{
+	//èƒŒæ™¯è‰²
+	BackGround = 0,
+	//è¾¹çº¿é¢œè‰²
+	LineColor = 1,
+	//æ–‡å­—é¢œè‰²
+	TextColor = 2,
+	//é¢œè‰²ç»„01:ç°è‰²ç³»
+	//å¸¸æ€é¢œè‰²
+	NormalColor_1 = 3,
+	//é¼ æ ‡è¿›å…¥æ—¶çš„é¢œè‰²
+	EnterColor_1 = 4,
+	//é¼ æ ‡ç‚¹å‡»æ—¶çš„é¢œè‰²
+	ClickColor_1 = 5,
 
-//¿ÉÏÔÊ¾ÑÕÉ«
-int COLOR[] = { BLACK,BLUE,GREEN,CYAN,RED,MAGENTA,BROWN,LIGHTGRAY,DARKGRAY,LIGHTBLUE,LIGHTGREEN,LIGHTCYAN,LIGHTRED,LIGHTMAGENTA,YELLOW,WHITE };
+	//é¢œè‰²ç»„02:é»„è‰²ç³»
+	//å¸¸æ€é¢œè‰²
+	NormalColor_2 = 6,
+	//é¼ æ ‡è¿›å…¥æ—¶çš„é¢œè‰²
+	EnterColor_2 = 7,
+	//é¼ æ ‡ç‚¹å‡»æ—¶çš„é¢œè‰²
+	ClickColor_2 = 8,
+
+	//é¢œè‰²ç»„03:è“è‰²ç³»
+	//å¸¸æ€é¢œè‰²
+	NormalColor_3 = 9,
+	//é¼ æ ‡è¿›å…¥æ—¶çš„é¢œè‰²
+	EnterColor_3 = 10,
+	//é¼ æ ‡ç‚¹å‡»æ—¶çš„é¢œè‰²
+	ClickColor_3 = 11,
+};
+
+//é¢œè‰²rgbç»“æ„ä½“
+//åˆå§‹åŒ–é¢œè‰²RGBå€¼ï¼Œä¸æšä¸¾Colorsä¸€ä¸€å¯¹åº”
+typedef struct {
+	BYTE r, g, b;
+}RGBs[12];
+RGBs rgb= { {0,0,0},
+	{163,148,128},
+	{245,245,245},
+
+	{128,138,135},
+	{192,192,192},
+	{41,36,33},
+
+	{218,165,105},
+	{255,227,132},
+	{237,145,33},
+
+	{61,89,171},
+	{30,144,255},
+	{25,25,112}
+};
+
 
 class DataManager
 {
 	typedef struct 
 	{
-		//Êı¾İÎÄ¼şÃû
+		//æ–‡ä»¶å
 		char filename[20];
-		//Êı¾İÌõÊı
+		//æ•°æ®æ¡æ•°ï£±
 		int row;
-		//²»Í¬½×´Î¶àÏîÊ½ÄâºÏ
+		//ä¸åŒé˜¶æ¬¡å¤šé¡¹å¼æ‹Ÿåˆ
 		double polyCoeff[10][10];
-		//²»Í¬½×´Î¶àÏîÊ½ÄâºÏÎó²î
+		//ä¸åŒé˜¶æ¬¡å¤šé¡¹å¼æ‹Ÿåˆè¯¯å·®
 		double fitError[10];
-		//×î¸ßÄâºÏ½×Êı¡ª¡ªÓÃ»§ÊäÈë
+		//æœ€é«˜æ‹Ÿåˆé˜¶æ•°_ç”¨æˆ·è¾“å…¥
 		int MaxOrder;
-		//×î¼ÑÄâºÏ½×Êı
+		//æœ€ä½³æ‹Ÿåˆé˜¶æ•°
 		int OptiOrder;
-		//ÔëÉù¾ùÖµ
+		//å™ªå£°å‡å€¼
 		char Nmean;
-		//ÔëÉù·½²î
+		//å™ªå£°æ–¹å·®
 		char Nvar;
-		//ÊÇ·ñÒÑ´æÈëĞÅÏ¢¹ÜÀíÏµÍ³
+		//æ˜¯å¦å·²å­˜å…¥ä¿¡æ¯ç®¡ç†ç³»ç»Ÿ
 		bool status;
 	}PolyfitInfo;
+
 	typedef struct
 	{
 		int x0, y0, x1, y1;  // top left point and the bottom right point
@@ -48,32 +105,44 @@ class DataManager
 
 	int COLOR[16];
 private:
-	//µ¥Àı
+
+	//å•ä¾‹ï£±
 	static  DataManager* instance;
+
 public:
 	DataManager();
 	~DataManager();
 
 	static DataManager* Instance();
-	// º¯ÊıÉùÃ÷
 
-	// Êı×é»ù±¾²Ù×÷ ÎÄ¼ş£ºarrayop.cpp
+	//åŠ è½½å·²æœ‰æ•°æ®
+	bool InitData();
+	//æ·»åŠ æ–°æ•°æ®
+	bool AddData();
+	//åˆ é™¤æ•°æ®
+	bool DeleteData();
+	//ä¿å­˜æ•°æ®
+	bool SaveData();
+	//æ ¹æ®æ•°æ®æ¡æ•°è¿›è¡Œæ’åº
+	void SortDataByRow();
+
+	// æ•°ç»„åŸºæœ¬æ“ä½œ æ–‡ä»¶ï¼šarrayop.cpp
 	double arrayscale(double a[], int n);
 	double arraymin(double a[], int n);
 	double arraymax(double a[], int n);
 	void arraycopy(double target[], double source[], int n);
 	void arraysub(double x[], double y[], double z[], int n);// z=x-y;
 
-	// ¶àÏîÊ½ÄâºÏº¯Êı
+	// å¤šé¡¹å¼æ‹Ÿåˆå‡½æ•°
 	void polyfit(int n, double x[], double y[], int poly_n, double p[]);
 	void gauss_solve(int n, double A[], double x[], double b[]);
 	void reverseP(double arr[], int size);
 
-	// ¶àÏîÊ½º¯Êı´¦Àí
+
+	// å¤šé¡¹å¼å‡½æ•°å¤„ç†
 	double fx(double x, double coeffs[], int degree);
 
-
-	// Í¼ĞÎÏÔÊ¾  ÎÄ¼ş£º datagraph.cpp
+	// å›¾å½¢æ˜¾ç¤º  æ–‡ä»¶ï¼š datagraph.cpp
 	void showhisto(double result[], int n, PlotArea area);
 	void showpinfo(PolyfitInfo pinfo, PlotArea farea);
 	void showdata(double dataX[], double dataY[], int n, long color, PlotArea p);

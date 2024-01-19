@@ -1,3 +1,14 @@
+ï»¿#include "LoginWindow.h"
 //****************
-//µÇÂ¼½çÃæ
+//ç™»å½•ç•Œé¢
 //****************
+
+LoginWindow::LoginWindow()
+{
+	BasicWindow::CreateBasicWindow(Colors::BackGround);
+}
+
+LoginWindow::~LoginWindow()
+{
+
+}

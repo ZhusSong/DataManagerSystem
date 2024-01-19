@@ -1,21 +1,47 @@
-#include "DataManager.h"
+ï»¿#include "DataManager.h"
 
-//Ö¸Õë³õÊ¼»¯
+//æŒ‡é’ˆåˆå§‹åŒ–
 DataManager* DataManager::instance = nullptr;
-//ÀàµÄ³õÊ¼»¯
+//ç±»çš„åˆå§‹åŒ–
 DataManager::DataManager()
 {
+	instance = new DataManager();
 }
 
-//ÄÚ´æÊÍ·Å
+//å†…å­˜é‡Šæ”¾
 DataManager::~DataManager()
 {
     delete instance;
 }
-//ÓÉÍâ²¿º¯Êıµ÷ÓÃ£¬·µ»Ø´ËÀàµÄµ¥Àı
+//ç”±å¤–éƒ¨å‡½æ•°è°ƒç”¨ï¼Œè¿”å›æ­¤ç±»çš„å•ä¾‹
 DataManager* DataManager::Instance()
 {
     return instance;
+}
+
+bool DataManager::InitData()
+{
+
+	return true;
+}
+
+bool DataManager::AddData()
+{
+	return false;
+}
+
+bool DataManager::DeleteData()
+{
+	return false;
+}
+
+bool DataManager::SaveData()
+{
+	return false;
+}
+
+void DataManager::SortDataByRow()
+{
 }
 
 double DataManager::arrayscale(double a[], int n)
@@ -111,7 +137,7 @@ void DataManager::polyfit(int n, double x[], double y[], int poly_n, double p[])
 	gauss_solve(poly_n + 1, ata, p, sumxy);
 	reverseP(p, poly_n);
 
-	//ÊÍ·Å¶¯Ì¬·ÖÅäµÄÄÚ´æ¡£	
+	//ï¾Šï¾ï½·ï¾…ï½¶ï½¯ï¾Œï½¬ï½·ï¾–ï¾…èŠï¾„ï¾„ï¾šï½´è­¯ï½£	
 	free(tempx);
 	free(sumxx);
 	free(tempy);
@@ -147,7 +173,7 @@ void DataManager::gauss_solve(int n, double A[], double x[], double b[])
 			max = b[k];                    //change array:b[k]&b[r]
 			b[k] = b[r];
 			b[r] = max;
-		}                                  //ÎªÁËÊ¹ÓÃÁĞÖ÷ÔªÏûÈ¥·¨£¬ÔÚµÚk²½ÏûÔªÇ°£¬ÏÈÕÒ³ökĞĞÏÂËùÓĞµÚkÁĞÔªËØ×î´óµÄ·ÇÁãÔªËØar,k£¬½«µÚrĞĞÓëµÚkĞĞ½øĞĞÕûĞĞ½»»»
+		}                                  //ï¾ï½ªï¾ï¾‹ï¾Šï½¹ï¾“ï¾ƒï¾ï¾ï¾–î–·ï½ªï¾é‰™ï½¥ï½·ï½¨ï½£ï½¬ï¾”ï¾šï½µï¾škï½²ï½½ï¾é‹•ï½ªï¾‡ï½°ï½£ï½¬ï¾ï¾ˆï¾•ï¾’ï½³î’“ï¾ï¾ï¾ï¾‚ï¾‹îœ®ï¾ï½µï¾škï¾ï¾ï¾”ï½ªï¾‹ï¾˜ï¾—é‹—îŠ¨ï¾„ï½·ï¾‡ï¾è€¿ï½ªï¾‹ï¾˜ar,kï½£ï½¬ï½½ï½«ï½µï¾šrï¾ï¾ï¾“ãƒ»ï¾škï¾ï¾ï½½î™¯ï¾ï¾•é‹—ï¾ï½½ï½»ï½»ï½»
 
 		for (i = k + 1; i < n; i++)
 		{
@@ -206,13 +232,13 @@ void DataManager::showpinfo(PolyfitInfo pinfo, PlotArea farea)
 {
 	// need to set the project properties to MBCS	
 	char s[50];
-	sprintf(s, "Filename: %s", strupr(pinfo.filename));
+	printf_s(s, "Filename: %s", _strupr_s(pinfo.filename));
 	outtextxy(farea.x0, farea.y0, s);
-	sprintf(s, "Row of Data %d", pinfo.row);
+	printf_s(s, "Row of Data %d", pinfo.row);
 	outtextxy(farea.x0, farea.y0 + 30, s);
-	sprintf(s, "OptiOrder is %d", pinfo.OptiOrder);
+	printf_s(s, "OptiOrder is %d", pinfo.OptiOrder);
 	outtextxy(farea.x0, farea.y0 + 60, s);
-	sprintf(s, "Overall fiterrror is %.2lf", pinfo.fitError[pinfo.OptiOrder]);
+	printf_s(s, "Overall fiterrror is %.2lf", pinfo.fitError[pinfo.OptiOrder]);
 	outtextxy(farea.x0, farea.y0 + 90, s);
 }
 
