@@ -4,6 +4,10 @@
 //指针初始化
 WindowsManager* WindowsManager::instance = nullptr;
 
+void WindowsManager::Close()
+{
+}
+
 WindowsManager::WindowsManager()
 {
 	instance = new WindowsManager();
@@ -21,5 +25,9 @@ WindowsManager* WindowsManager::Instance()
 //加载登录界面
 void WindowsManager::Init()
 {
-	_Window = new LoadWindow();
+	Window = new LoadWindow();
+}
+
+void WindowsManager::Run()
+{
 }

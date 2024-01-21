@@ -5,7 +5,7 @@
 
 LoginWindow::LoginWindow()
 {
-	BasicWindow::CreateBasicWindow(Colors::BackGround);
+	//BasicWindow::CreateBasicWindow(Colors::BackGround);
 }
 
 LoginWindow::~LoginWindow()

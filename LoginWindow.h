@@ -2,8 +2,8 @@
 //****************
 //登录界面头文件
 //****************
-#include "BasicWindow.h"
-class LoginWindow:public BasicWindow
+#include "UIManager.h"
+class LoginWindow
 {
 private:
 

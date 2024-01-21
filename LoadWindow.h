@@ -3,8 +3,8 @@
 //****************
 //加载界面头文件
 //****************
-#include "BasicWindow.h"
-class LoadWindow :public BasicWindow
+#include "UIManager.h"
+class LoadWindow 
 {
 
 
