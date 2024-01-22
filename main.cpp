@@ -11,5 +11,6 @@ using namespace std;
 int  main()
 {
 	WindowsManager::Instance()->Init();
+	WindowsManager::Instance()->Run();
 	return 0;
 }

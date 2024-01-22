@@ -45,9 +45,9 @@ void Button::Draw()
     fillrectangle(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight);
     settextcolor(BLACK);
     setbkmode(TRANSPARENT);
-    settextstyle(20 * scale, 0, _T("Î¢ÈíÑÅºÚ"));
+    settextstyle(20 * scale, 0, _T("‘v‘Ì"));
     int textX = scaledX + (scaledWidth - textwidth(*text.c_str())) / 2;
-    int textY = scaledY + (scaledHeight - textheight(_T("Î¢ÈíÑÅºÚ"))) / 2;
+    int textY = scaledY + (scaledHeight - textheight(_T("‘v‘Ì"))) / 2;
     outtextxy(textX, textY, *text.c_str());
 }
 

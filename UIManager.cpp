@@ -1,10 +1,8 @@
 ﻿#include "UIManager.h"
 
 
-void UIManager::CreateBasicWindow(Colors color)
+void UIManager::CreateBasicWindow(COLORS color)
 {
-	//生成一个分辨率WIDTH*HEIGHT的窗口
-	initgraph(WIDTH, HEIGHT);
 	//设置背景颜色
 	setbkcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
 	//刷新窗口
@@ -12,13 +10,13 @@ void UIManager::CreateBasicWindow(Colors color)
 
 }
 
-int UIManager::CreateButton(Colors normalColor, Colors enterColor, Colors clickColor, int size[4], char text[20])
+int UIManager::CreateButton(COLORS normalColor, COLORS enterColor, COLORS clickColor, int size[4], char text[20])
 {
 	fillroundrect(size[0], size[1], size[2], size[3], 50, 50);
 	setfillcolor(RGB(rgb[normalColor].r, rgb[normalColor].g, rgb[normalColor].b));
 
 
-	settextcolor(RGB(rgb[Colors::TextColor].r, rgb[Colors::TextColor].g, rgb[Colors::TextColor].b));
+	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
 	//设置文字样式，大小，字体
 	settextstyle(40, 0, "宋体");
 	setbkmode(TRANSPARENT);
@@ -30,12 +28,12 @@ int UIManager::CreateButton(Colors normalColor, Colors enterColor, Colors clickC
 	return *range;
 }
 
-void UIManager::CreateRectangleBox(Colors color, int size[4], char text[20])
+void UIManager::CreateRectangleBox(COLORS color, int size[4], char text[20])
 {
 	fillrectangle(size[0], size[1], size[2], size[3]);
 	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
 
-	settextcolor(RGB(rgb[Colors::TextColor].r, rgb[Colors::TextColor].g, rgb[Colors::TextColor].b)); 
+	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
 	//设置文字样式，大小，字体
 	settextstyle(40, 0, "宋体"); 
 	setbkmode(TRANSPARENT);
@@ -54,12 +52,12 @@ void UIManager::CreateRectangleBox(Colors color, int size[4], char text[20])
 	
 }
 
-void UIManager::CreateRoundrectBox(Colors color, int size[4], char text[20])
+void UIManager::CreateRoundrectBox(COLORS color, int size[4], char text[20])
 {
 
 	fillroundrect(size[0], size[1], size[2], size[3],50,50);
 	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
-	settextcolor(RGB(rgb[Colors::TextColor].r, rgb[Colors::TextColor].g, rgb[Colors::TextColor].b));
+	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
 	//设置文字样式，大小，字体
 	settextstyle(40, 0, "宋体");
 	setbkmode(TRANSPARENT);
@@ -68,12 +66,12 @@ void UIManager::CreateRoundrectBox(Colors color, int size[4], char text[20])
 	outtextxy(width + size[0], height + size[1], text);
 }
 
-void UIManager::CreateInputBox(Colors color, int size[4], char text[20])
+void UIManager::CreateInputBox(COLORS color, int size[4], char text[20])
 {
 	fillrectangle(size[0], size[1], size[2], size[3]);
 	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
 
-	settextcolor(RGB(rgb[Colors::TextColor].r, rgb[Colors::TextColor].g, rgb[Colors::TextColor].b));
+	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
 	//设置文字样式，大小，字体
 	settextstyle(40, 0, "宋体");
 	setbkmode(TRANSPARENT);

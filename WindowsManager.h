@@ -13,11 +13,15 @@ private:
 	static  WindowsManager* instance;
 	//窗口管理指针，每次更换窗口时更换指定对象
 	UIManager* Window;
+
 public:
 	//界面种类
 	enum WindowsKind
 	{
-
+		LoadWindow=0,
+		LoginWindow=1,
+		MainWindow=2,
+		PolyWindow=3,
 	};
 	static  WindowsManager* Instance();
 

@@ -15,9 +15,9 @@ void InputBox::Draw()
 
     settextcolor(BLACK);
     setbkmode(TRANSPARENT);
-    settextstyle(height * 3 / 4, 0, _T("ËÎÌå"));
+    settextstyle(height * 3 / 4, 0, _T("‘v‘Ì"));
 
-    outtextxy(x + 5, y + (height - textheight(_T("ËÎÌå"))) / 2,  *text.c_str());
+    outtextxy(x + 5, y + (height - textheight(_T("‘v‘Ì"))) / 2,  *text.c_str());
 
     setlinecolor(BLACK);
     if (isSelected && showCursor)

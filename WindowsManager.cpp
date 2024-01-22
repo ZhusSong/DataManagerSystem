@@ -22,12 +22,21 @@ WindowsManager* WindowsManager::Instance()
 	return instance;
 }
 
-//加载登录界面
+//加载各种界面
 void WindowsManager::Init()
 {
-	Window = new LoadWindow();
+	LoadWindow::Instance()->Init();
 }
 
 void WindowsManager::Run()
 {
+	initgraph(WIDTH, HEIGHT);
+	//设置背景颜色
+	setbkcolor(RGB(rgb[COLORS::BackGround].r, rgb[COLORS::BackGround].g, rgb[COLORS::BackGround].b));
+
+	while (true)
+	{
+
+		LoadWindow::Instance()->Run();
+	}
 }

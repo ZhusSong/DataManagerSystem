@@ -85,7 +85,7 @@ void TableWidget::draw()
     solidrectangle(x, y, x + width, y + height);
 
     setlinecolor(BLACK);
-    settextstyle(12, 0, _T("ËÎÌå"));
+    settextstyle(12, 0, _T("‘v‘Ì"));
 
     int rowCount = min(visibleRowCount, static_cast<int>(data.size()));
 
@@ -95,7 +95,7 @@ void TableWidget::draw()
         int columnWidth = columnWidths[j];
         rectangle(columnX, headerY, columnX + columnWidth, headerY + rowHeight);
         int textX = columnX + (columnWidth - textwidth(*data[0][j].c_str())) / 2;
-        int textY = headerY + (rowHeight - textheight(_T("ËÎÌå"))) / 2;
+        int textY = headerY + (rowHeight - textheight(_T("‘v‘Ì"))) / 2;
         outtextxy(textX, textY, *data[0][j].c_str());
         columnX += columnWidth;
     }
@@ -117,7 +117,7 @@ void TableWidget::draw()
             }
             fillrectangle(columnX, rowY, columnX + columnWidth, rowY + rowHeight);
             int textX = columnX + (columnWidth - textwidth(*data[dataIndex][j].c_str())) / 2;
-            int textY = rowY + (rowHeight - textheight(_T("ËÎÌå"))) / 2;
+            int textY = rowY + (rowHeight - textheight(_T("‘v‘Ì"))) / 2;
             outtextxy(textX, textY, *data[dataIndex][j].c_str());
             columnX += columnWidth;
         }

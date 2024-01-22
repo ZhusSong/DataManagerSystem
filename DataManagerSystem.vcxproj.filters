@@ -110,5 +110,8 @@
     <ClInclude Include="MainWindow.h">
       <Filter>Windows\MainWindow</Filter>
     </ClInclude>
+    <ClInclude Include="SystemConstant.h">
+      <Filter>Data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

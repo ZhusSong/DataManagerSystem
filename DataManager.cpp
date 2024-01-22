@@ -19,9 +19,36 @@ DataManager* DataManager::Instance()
     return instance;
 }
 
+int DataManager::GetDataCount()
+{
+	return FileCount;
+}
+
 bool DataManager::InitData()
 {
-
+	std::vector<double> numericalData;
+	int row;
+	string s ;
+	for (const auto& entry : fs::directory_iterator(FolderPath)) {
+		int j = 0;
+		if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+			ifstream inputFile(entry.path());
+			if (inputFile.is_open()) {
+				double value;
+				while (inputFile >> value) {
+					s = entry.path().filename().string();
+					numericalData.push_back(value);
+				}
+				row = numericalData.size();
+				PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
+				inputFile.close();
+			}
+			else {
+				std::cerr << "Error opening file: " << entry.path() << std::endl;
+			}
+		}
+		FileCount++;
+	}
 	return true;
 }
 
@@ -32,6 +59,7 @@ bool DataManager::AddData()
 
 bool DataManager::DeleteData()
 {
+
 	return false;
 }
 
@@ -232,7 +260,7 @@ void DataManager::showpinfo(PolyfitInfo pinfo, PlotArea farea)
 {
 	// need to set the project properties to MBCS	
 	char s[50];
-	printf_s(s, "Filename: %s", _strupr_s(pinfo.filename));
+	//printf_s(s, "Filename: %s", _strupr_s(pinfo.filename));
 	outtextxy(farea.x0, farea.y0, s);
 	printf_s(s, "Row of Data %d", pinfo.row);
 	outtextxy(farea.x0, farea.y0 + 30, s);
