@@ -5,7 +5,7 @@ DataManager* DataManager::instance = nullptr;
 //类的初始化
 DataManager::DataManager()
 {
-	instance = new DataManager();
+
 }
 
 //内存释放
@@ -13,25 +13,37 @@ DataManager::~DataManager()
 {
     delete instance;
 }
+void DataManager::Init()
+{
+	instance = new DataManager();
+	instance->FileCount=InitData();
+	instance->LoadAccount();
+	
+	instance->CreateAccount("user", "123");
+}
 //由外部函数调用，返回此类的单例
 DataManager* DataManager::Instance()
 {
     return instance;
 }
 
+
 int DataManager::GetDataCount()
 {
 	return FileCount;
 }
 
-bool DataManager::InitData()
+int DataManager::InitData()
 {
+	int fileCount=0;
+	const string FolderPath = "./Datas";
 	std::vector<double> numericalData;
 	int row;
 	string s ;
-	for (const auto& entry : fs::directory_iterator(FolderPath)) {
-		int j = 0;
-		if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+	for (const auto& entry :filesystem::directory_iterator(FolderPath))
+	{
+		if (entry.is_regular_file() && entry.path().extension() == ".txt")
+		{
 			ifstream inputFile(entry.path());
 			if (inputFile.is_open()) {
 				double value;
@@ -40,16 +52,76 @@ bool DataManager::InitData()
 					numericalData.push_back(value);
 				}
 				row = numericalData.size();
-				PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
+				instance->PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
 				inputFile.close();
 			}
 			else {
 				std::cerr << "Error opening file: " << entry.path() << std::endl;
 			}
 		}
-		FileCount++;
+		fileCount+=1;
 	}
+	return fileCount;
+}
+
+bool DataManager::FindAccount(string name)
+{
+	for (const auto& account : AccountDatas)
+	{
+		if (account.name == name)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool DataManager::LoadAccount()
+{
+	const string FolderPath = "./Accounts/account.dat";
+	std::ifstream inFile(FolderPath, std::ios::binary);
+	if (!inFile.is_open()) {
+		std::cerr << "Error opening file for reading.\n";
+		return false;
+	}
+	Account user;
+	while (inFile.read(reinterpret_cast<char*>(&user), sizeof(Account))) {
+		AccountDatas.push_back(user);
+	}
+
+	inFile.close();
 	return true;
+}
+
+bool DataManager::CreateAccount(string name, string password)
+{
+	if (!FindAccount(name))
+	{
+		const string FolderPath = "./Accounts/account.dat";
+		ofstream outfile(FolderPath, std::ios::binary);
+		Account a = { name,password };
+		AccountDatas.push_back({ a });
+		for (const auto& account : AccountDatas)
+		{
+			outfile.write(reinterpret_cast<const char*>(&account), sizeof(Account));
+		}
+		outfile.close();
+		return true;
+	}
+	else
+	{
+		HWND hnd = GetHWnd();
+		MessageBox(hnd, "已存在该账户！", "Error", MB_OK);
+		return false;
+	}
+	//ofstream outfile(FolderPath, ios::binary);
+	//if (outfile.is_open())
+	//{
+	//	outfile << name << " " << password << "\n";
+	//}
+	//else
+	//{
+	//	return false;
+	//}
 }
 
 bool DataManager::AddData()

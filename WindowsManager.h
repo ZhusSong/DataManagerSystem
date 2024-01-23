@@ -5,6 +5,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include "UIManager.h"
+#include "LoginWindow.h"
+#include "LoadWindow.h"
+#include "SystemConstant.h"
 
 class WindowsManager
 {
@@ -15,14 +18,7 @@ private:
 	UIManager* Window;
 
 public:
-	//界面种类
-	enum WindowsKind
-	{
-		LoadWindow=0,
-		LoginWindow=1,
-		MainWindow=2,
-		PolyWindow=3,
-	};
+	
 	static  WindowsManager* Instance();
 
 	//加载初始界面

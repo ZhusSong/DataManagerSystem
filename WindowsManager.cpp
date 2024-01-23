@@ -1,6 +1,4 @@
 ﻿#include "WindowsManager.h"
-#include "LoginWindow.h"
-#include "LoadWindow.h"
 //指针初始化
 WindowsManager* WindowsManager::instance = nullptr;
 
@@ -10,7 +8,6 @@ void WindowsManager::Close()
 
 WindowsManager::WindowsManager()
 {
-	instance = new WindowsManager();
 }
 
 WindowsManager::~WindowsManager()
@@ -25,7 +22,9 @@ WindowsManager* WindowsManager::Instance()
 //加载各种界面
 void WindowsManager::Init()
 {
+	instance = new WindowsManager();
 	LoadWindow::Instance()->Init();
+	LoginWindow::Instance()->Init();
 }
 
 void WindowsManager::Run()
@@ -36,7 +35,19 @@ void WindowsManager::Run()
 
 	while (true)
 	{
+		switch (NowWindow)
+		{
+		case loadWindow:
+			LoadWindow::Instance()->Run();
+			break;
+		case loginWindow:
+			LoginWindow::Instance()->Run();
+			break;
+		case mainWindow:
+			break;
+		default:
+			break;
+		}
 
-		LoadWindow::Instance()->Run();
 	}
 }

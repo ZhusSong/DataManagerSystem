@@ -68,3 +68,12 @@ RGBs rgb = { {220,220,220},
 	{30,144,255},
 	{25,25,112}
 };
+//界面种类
+enum WindowsKind
+{
+	loadWindow = 0,
+	loginWindow = 1,
+	mainWindow = 2,
+	polyWindow = 3,
+};
+extern enum WindowsKind NowWindow;

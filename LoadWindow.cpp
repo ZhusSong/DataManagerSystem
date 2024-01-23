@@ -1,5 +1,5 @@
 #include "LoadWindow.h"
-
+#include "WindowsManager.h"
 //指针初始化
 LoadWindow* LoadWindow::instance = nullptr;
 LoadWindow::LoadWindow()
@@ -41,11 +41,7 @@ void LoadWindow::DrawProgressBar()
 	//
 	outtextxy(barX + barWidth / 2 - textwidth(progressText) / 2, barY + barHeight / 2 - textheight(progressText) / 2 + barHeight+20, progressText);
 
-//	outtextxy(barX + barWidth / 2 - textwidth(progressText) / 2, barY + barHeight / 2 - textheight(progressText) / 2, progressText);
-
-	// Render the graphics
 	FlushBatchDraw();
-
 
 	EndBatchDraw();
 }
@@ -57,14 +53,26 @@ LoadWindow* LoadWindow::Instance()
 void LoadWindow::Init()
 {
 	instance = new LoadWindow();
+	instance ->DataCount = DataManager::Instance()->GetDataCount();
 }
 
 void LoadWindow::Run()
 {
-	while (Progress <= 100) {
+	while (Progress <=100) {
+		if (100 - Progress <= 1.0f)
+		{
+			Progress = 100;
+		}
 		DrawProgressBar();
-		Sleep(200); // Optional delay to slow down the progress for demonstration purposes
-		Progress += 5; // You can adjust the increment to control the speed of progress
+		Progress += 100/ DataCount;
+		Sleep(400);
+		if (Progress >= 100)
+		{
+			Sleep(100);
+			NowWindow = loginWindow;
+			cleardevice();
+
+		}
 	}
 		
 }

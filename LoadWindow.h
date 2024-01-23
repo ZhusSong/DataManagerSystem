@@ -5,6 +5,7 @@
 //****************
 #include "UIManager.h"
 #include "SystemConstant.h"
+#include "DataManager.h"
 class LoadWindow 
 {
 private:
@@ -12,6 +13,7 @@ private:
 	static  LoadWindow* instance;
 	int Progress = 0;
 	void DrawProgressBar();
+	int DataCount = 0;
 
 public:
 	static  LoadWindow* Instance();

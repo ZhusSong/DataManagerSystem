@@ -3,6 +3,8 @@
 //登录界面头文件
 //****************
 #include "UIManager.h"
+#include "SystemConstant.h"
+#include "DataManager.h"
 class LoginWindow
 {
 private:

@@ -4,7 +4,7 @@
 //****************
 #include <iostream>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <graphics.h>
 #include <time.h>
 #include <conio.h>
@@ -20,6 +20,8 @@ namespace fs = std::filesystem;
 
 class DataManager
 {
+public:
+	//数据结构体
 	typedef struct 
 	{
 		//文件名
@@ -43,7 +45,14 @@ class DataManager
 		//是否已存入信息管理系统
 		bool status;
 	}PolyfitInfo;
+	//账号
+	typedef struct
+	{
+		string name;
+		string password;
+	}Account;
 
+	//
 	typedef struct
 	{
 		int x0, y0, x1, y1;  // top left point and the bottom right point
@@ -51,25 +60,33 @@ class DataManager
 
 	int COLOR[16];
 private:
-	string FolderPath = "./Datas";
 	//单例
 	static  DataManager* instance;
 
-	//文件个数
-	int FileCount;
 	vector<PolyfitInfo> PolyDatas;
+
+	vector<Account> AccountDatas;
+
+	//文件个数s
+	 int FileCount = 0;
 
 public:
 	DataManager();
 	~DataManager();
-
+	void Init();
 	static DataManager* Instance();
 	//创建随机数文件,数据数大于1小于1000
 	bool CreateRandomData(int count);
 	//获取数据文件夹中的文件个数
 	int GetDataCount();
 	//加载已有数据
-	bool InitData();
+	int InitData();
+	//读取用户数据
+	bool LoadAccount();
+	//寻找用户是否已登记
+	bool FindAccount(string name);
+	//创建新用户
+	bool CreateAccount(string name, string password);
 	//添加新数据
 	bool AddData();
 	//删除数据

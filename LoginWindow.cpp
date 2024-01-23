@@ -9,9 +9,9 @@ LoginWindow* LoginWindow::Instance()
 {
 	return instance;
 }
+
 LoginWindow::LoginWindow()
 {
-	instance = new LoginWindow();
 }
 
 LoginWindow::~LoginWindow()
@@ -21,8 +21,10 @@ LoginWindow::~LoginWindow()
 
 void LoginWindow::Init()
 {
+	instance = new LoginWindow();
 }
 
 void LoginWindow::Run()
 {
+
 }
