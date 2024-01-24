@@ -143,11 +143,11 @@
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="DataManager.cpp" />
-    <ClCompile Include="InputBox.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="LoadWindow.cpp" />
     <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="TableWidget.cpp" />
-    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="WindowsManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -157,11 +157,11 @@
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="DataManager.h" />
-    <ClInclude Include="InputBox.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="LoadWindow.h" />
     <ClInclude Include="LoginWindow.h" />
     <ClInclude Include="TableWidget.h" />
-    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="WindowsManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

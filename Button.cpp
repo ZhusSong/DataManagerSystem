@@ -42,12 +42,22 @@ void Button::Draw()
         setfillcolor(RGB(225, 225, 225));
     }
 
+    //将参数中的wstring类型转换为const char*类型
+    const char* _text = nullptr;
+    size_t bufferSize = 0;
+    wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+    std::vector<char> buffer(bufferSize + 1);
+    if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+    {
+        _text = buffer.data();
+    }
+
     fillrectangle(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight);
     settextcolor(BLACK);
     setbkmode(TRANSPARENT);
-    settextstyle(20 * scale, 0, _T("�v��"));
-    int textX = scaledX + (scaledWidth - textwidth(*text.c_str())) / 2;
-    int textY = scaledY + (scaledHeight - textheight(_T("�v��"))) / 2;
-    outtextxy(textX, textY, *text.c_str());
+    settextstyle(20 * scale, 0, _T("宋体"));
+    int textX = scaledX + (scaledWidth - textwidth(_text)) / 2;
+    int textY = scaledY + (scaledHeight - textheight(_T("宋体"))) / 2;
+    outtextxy(textX, textY, _text);
 }
 

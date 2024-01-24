@@ -13,8 +13,6 @@ LoadWindow::~LoadWindow()
 
 void LoadWindow::DrawProgressBar()
 {
-	// Clear the screen
-	cleardevice();
 	int barWidth = 800;
 	int barHeight = 150;
 
@@ -34,16 +32,14 @@ void LoadWindow::DrawProgressBar()
 	setfillcolor(RGB(rgb[COLORS::NormalColor_1].r, rgb[COLORS::NormalColor_1].g, rgb[COLORS::NormalColor_1].b)); 
 	solidroundrect(barX, barY , barX  + filledWidth, barY + barHeight ,100,100);
 
-	 settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
+	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
 	settextstyle(40, 0, _T("Arial"));
 	TCHAR progressText[20];
 	_stprintf_s(progressText, _T("Loading: %d%%"), Progress);
-	//
+	
 	outtextxy(barX + barWidth / 2 - textwidth(progressText) / 2, barY + barHeight / 2 - textheight(progressText) / 2 + barHeight+20, progressText);
 
-	FlushBatchDraw();
 
-	EndBatchDraw();
 }
 
 LoadWindow* LoadWindow::Instance()
@@ -54,11 +50,15 @@ void LoadWindow::Init()
 {
 	instance = new LoadWindow();
 	instance ->DataCount = DataManager::Instance()->GetDataCount();
+
+	UIManager::Instance()->CreateLabel(WindowsKind::loadWindow,
+		300, 100, 400, 80, L"Data System");
 }
 
 void LoadWindow::Run()
 {
-	while (Progress <=100) {
+	if (Progress <=100) 
+	{
 		if (100 - Progress <= 1.0f)
 		{
 			Progress = 100;
@@ -71,7 +71,6 @@ void LoadWindow::Run()
 			Sleep(100);
 			NowWindow = loginWindow;
 			cleardevice();
-
 		}
 	}
 		

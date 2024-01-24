@@ -29,18 +29,20 @@ void WindowsManager::Init()
 
 void WindowsManager::Run()
 {
-	initgraph(WIDTH, HEIGHT);
-	//设置背景颜色
-	setbkcolor(RGB(rgb[COLORS::BackGround].r, rgb[COLORS::BackGround].g, rgb[COLORS::BackGround].b));
-
 	while (true)
 	{
+		BeginBatchDraw();
 		switch (NowWindow)
 		{
 		case loadWindow:
+
+			cleardevice();
 			LoadWindow::Instance()->Run();
+			UIManager::Instance()->Run();
+
 			break;
 		case loginWindow:
+			UIManager::Instance()->Run();
 			LoginWindow::Instance()->Run();
 			break;
 		case mainWindow:
@@ -48,6 +50,6 @@ void WindowsManager::Run()
 		default:
 			break;
 		}
-
+		EndBatchDraw();
 	}
 }

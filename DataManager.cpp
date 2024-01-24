@@ -5,10 +5,15 @@ DataManager* DataManager::instance = nullptr;
 //类的初始化
 DataManager::DataManager()
 {
+	char a[20] = "user02";
+	char b[20] = "1234";
 
+	FileCount = InitData();
+//	AccountDatas.push_back({ "user","123" });
+//	CreateAccount(a, b);
 }
 
-//内存释放
+//内存释放 
 DataManager::~DataManager()
 {
     delete instance;
@@ -16,15 +21,16 @@ DataManager::~DataManager()
 void DataManager::Init()
 {
 	instance = new DataManager();
-	instance->FileCount=InitData();
-	instance->LoadAccount();
-	
-	instance->CreateAccount("user", "123");
 }
 //由外部函数调用，返回此类的单例
 DataManager* DataManager::Instance()
 {
     return instance;
+}
+
+bool DataManager::CreateRandomData(int count)
+{
+	return false;
 }
 
 
@@ -52,7 +58,7 @@ int DataManager::InitData()
 					numericalData.push_back(value);
 				}
 				row = numericalData.size();
-				instance->PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
+				PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
 				inputFile.close();
 			}
 			else {
@@ -64,64 +70,73 @@ int DataManager::InitData()
 	return fileCount;
 }
 
-bool DataManager::FindAccount(string name)
+bool DataManager::FindAccount(char* name)
 {
 	for (const auto& account : AccountDatas)
 	{
-		if (account.name == name)
+		if (strcmp(account.name,name)==0)
 		{
 			return true;
 		}
 	}
 	return false;
 }
+
 bool DataManager::LoadAccount()
 {
-	const string FolderPath = "./Accounts/account.dat";
-	std::ifstream inFile(FolderPath, std::ios::binary);
-	if (!inFile.is_open()) {
-		std::cerr << "Error opening file for reading.\n";
+	ifstream infile("./Accounts/account.dat", ios::binary);
+	if (!infile.is_open()) 
+	{
+		MessageBox(GetHWnd(), "无法打开文件！", "error", MB_OK);
 		return false;
 	}
-	Account user;
-	while (inFile.read(reinterpret_cast<char*>(&user), sizeof(Account))) {
-		AccountDatas.push_back(user);
+	else
+	{
+		Account ac;
+		while (infile.read(reinterpret_cast<char*>(&ac), sizeof(Account))) {
+			AccountDatas.push_back(ac);
+		}
+		infile.close();
+		return true;
 	}
-
-	inFile.close();
-	return true;
 }
 
-bool DataManager::CreateAccount(string name, string password)
+bool DataManager::CreateAccount(char* name, char* password)
 {
-	if (!FindAccount(name))
+	if (!FindAccount(name)||AccountDatas.size()==0)
 	{
-		const string FolderPath = "./Accounts/account.dat";
-		ofstream outfile(FolderPath, std::ios::binary);
-		Account a = { name,password };
-		AccountDatas.push_back({ a });
-		for (const auto& account : AccountDatas)
+		//处理字符串存储时的空占位符
+		Account ac;
+		strncpy_s(ac.name, name, sizeof(ac.name) - 1);
+		strncpy_s(ac.password, password, sizeof(ac.password) - 1);
+		ac.name[sizeof(ac.name) - 1] = '\0'; // Ensure null-terminated strings
+		ac.password[sizeof(ac.password) - 1] = '\0';
+
+		AccountDatas.push_back(ac);
+
+		ofstream outfile("./Accounts/account.dat", ios::binary);
+		// Check if the file is opened successfully
+		if (!outfile.is_open()) 
 		{
-			outfile.write(reinterpret_cast<const char*>(&account), sizeof(Account));
+			return false;
+		}
+		else
+		{
+			outfile.write(reinterpret_cast<const char*>(AccountDatas.data()), AccountDatas.size() * sizeof(Account));
+			if (outfile.fail())
+			{
+				std::cerr << "Error!" << std::endl;
+				outfile.close();
+				return false;
+			}
 		}
 		outfile.close();
 		return true;
 	}
 	else
 	{
-		HWND hnd = GetHWnd();
-		MessageBox(hnd, "已存在该账户！", "Error", MB_OK);
 		return false;
 	}
-	//ofstream outfile(FolderPath, ios::binary);
-	//if (outfile.is_open())
-	//{
-	//	outfile << name << " " << password << "\n";
-	//}
-	//else
-	//{
-	//	return false;
-	//}
 }
 
 bool DataManager::AddData()

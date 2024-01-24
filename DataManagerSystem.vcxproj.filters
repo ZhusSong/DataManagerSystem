@@ -31,17 +31,17 @@
     <Filter Include="UIControl\Button">
       <UniqueIdentifier>{701d2d96-8d37-462f-8a66-f34a30c321a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UIControl\InputBox">
-      <UniqueIdentifier>{0aec55f6-d81c-4930-8893-2f605695ac41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UIControl\TextBox">
-      <UniqueIdentifier>{c0558a48-de00-4219-9c46-ddf7cd37f324}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UIControl\TableWidget">
       <UniqueIdentifier>{f0f97522-5407-44e3-a9f6-b2fbe954fa2b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Windows\MainWindow">
       <UniqueIdentifier>{a490fe49-440b-463e-8db8-bd25d362f145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\Label">
+      <UniqueIdentifier>{c0558a48-de00-4219-9c46-ddf7cd37f324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\TextBox">
+      <UniqueIdentifier>{0aec55f6-d81c-4930-8893-2f605695ac41}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -63,11 +63,11 @@
     <ClCompile Include="Button.cpp">
       <Filter>UIControl\Button</Filter>
     </ClCompile>
-    <ClCompile Include="InputBox.cpp">
-      <Filter>UIControl\InputBox</Filter>
-    </ClCompile>
     <ClCompile Include="TextBox.cpp">
       <Filter>UIControl\TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>UIControl\Label</Filter>
     </ClCompile>
     <ClCompile Include="TableWidget.cpp">
       <Filter>UIControl\TableWidget</Filter>
@@ -95,11 +95,11 @@
     <ClInclude Include="Button.h">
       <Filter>UIControl\Button</Filter>
     </ClInclude>
-    <ClInclude Include="InputBox.h">
-      <Filter>UIControl\InputBox</Filter>
-    </ClInclude>
     <ClInclude Include="TextBox.h">
       <Filter>UIControl\TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>UIControl\Label</Filter>
     </ClInclude>
     <ClInclude Include="TableWidget.h">
       <Filter>UIControl\TableWidget</Filter>

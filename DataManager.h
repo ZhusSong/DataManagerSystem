@@ -48,8 +48,8 @@ public:
 	//账号
 	typedef struct
 	{
-		string name;
-		string password;
+		char name[20];
+		char password[20];
 	}Account;
 
 	//
@@ -66,6 +66,7 @@ private:
 	vector<PolyfitInfo> PolyDatas;
 
 	vector<Account> AccountDatas;
+
 
 	//文件个数s
 	 int FileCount = 0;
@@ -84,9 +85,9 @@ public:
 	//读取用户数据
 	bool LoadAccount();
 	//寻找用户是否已登记
-	bool FindAccount(string name);
+	bool FindAccount(char* name);
 	//创建新用户
-	bool CreateAccount(string name, string password);
+	bool CreateAccount(char* name, char* password);
 	//添加新数据
 	bool AddData();
 	//删除数据

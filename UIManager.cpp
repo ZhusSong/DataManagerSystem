@@ -1,91 +1,118 @@
 ﻿#include "UIManager.h"
 
 
-void UIManager::CreateBasicWindow(COLORS color)
-{
-	//设置背景颜色
-	setbkcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
-	//刷新窗口
-	cleardevice();
-
-}
-
-int UIManager::CreateButton(COLORS normalColor, COLORS enterColor, COLORS clickColor, int size[4], char text[20])
-{
-	fillroundrect(size[0], size[1], size[2], size[3], 50, 50);
-	setfillcolor(RGB(rgb[normalColor].r, rgb[normalColor].g, rgb[normalColor].b));
-
-
-	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-	//设置文字样式，大小，字体
-	settextstyle(40, 0, "宋体");
-	setbkmode(TRANSPARENT);
-	int width = (size[2] - size[0]) / 2 - textwidth(text) / 2;
-	int height = (size[3] - size[0]) / 2 - textheight(text) / 2;
-	outtextxy(width + size[0], height + size[1], text);
-
-	int range[4] = {size[0], size[1],size[0] + size[2],size[1] + size[3]};
-	return *range;
-}
-
-void UIManager::CreateRectangleBox(COLORS color, int size[4], char text[20])
-{
-	fillrectangle(size[0], size[1], size[2], size[3]);
-	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
-
-	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-	//设置文字样式，大小，字体
-	settextstyle(40, 0, "宋体"); 
-	setbkmode(TRANSPARENT);
-	//设置文字居中
-	//|<- (right-left)/2->|
-	//***************************************
-	//*                                     *
-	//*              height                 *
-	//*      width <-| {text}               *
-	//*                 | |                 *
-	//*        (text pixel width)/2         *
-	//***************************************
- 	int width = (size[2] - size[0]) / 2 - textwidth(text) / 2;
-	int height = (size[3] - size[0]) / 2 - textheight(text) / 2;
-	outtextxy(width + size[0], height + size[1], text);
-	
-}
-
-void UIManager::CreateRoundrectBox(COLORS color, int size[4], char text[20])
-{
-
-	fillroundrect(size[0], size[1], size[2], size[3],50,50);
-	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
-	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-	//设置文字样式，大小，字体
-	settextstyle(40, 0, "宋体");
-	setbkmode(TRANSPARENT);
-	int width = (size[2] - size[0]) / 2 - textwidth(text) / 2;
-	int height = (size[3] - size[0]) / 2 - textheight(text) / 2;
-	outtextxy(width + size[0], height + size[1], text);
-}
-
-void UIManager::CreateInputBox(COLORS color, int size[4], char text[20])
-{
-	fillrectangle(size[0], size[1], size[2], size[3]);
-	setfillcolor(RGB(rgb[color].r, rgb[color].g, rgb[color].b));
-
-	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-	//设置文字样式，大小，字体
-	settextstyle(40, 0, "宋体");
-	setbkmode(TRANSPARENT);
-	int width = (size[2] - size[0]) / 2 - textwidth(text) / 2;
-	int height = (size[3] - size[0]) / 2 - textheight(text) / 2;
-	outtextxy(width + size[0], height + size[1], text);
-}
-
+//指针初始化
+UIManager* UIManager::instance = nullptr;
 
 UIManager::UIManager()
 {
+  
 }
 
 UIManager::~UIManager()
 {
 }
 
+UIManager* UIManager::Instance()
+{
+    return instance;
+}
+
+void UIManager::CreatePage()
+{
+
+}
+
+void UIManager::CreateButton(WindowsKind index, Button* button)
+{
+}
+
+void UIManager::CreateTextBox(WindowsKind index, TextBox* inputBox)
+{
+}
+
+void UIManager::CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text)
+{
+    Label* label = new Label(x, y, width, height, text);
+    AddLabel(index,label);
+}
+
+void UIManager::CreateTable(WindowsKind index, TableWidget* table)
+{
+}
+
+void UIManager::GetNowWindowKind(WindowsKind index)
+{
+    thisKind = index;
+}
+
+void UIManager::AddPage(IMAGE* page)
+{
+    pages.push_back(page);
+   
+}
+
+void UIManager::AddButton(WindowsKind index, Button* button)
+{
+        buttons.push_back({ index, button });
+}
+
+void UIManager::AddTextBox(WindowsKind index, TextBox* textBox)
+{
+        textBoxs.push_back({index, textBox });
+}
+
+void UIManager::AddLabel(WindowsKind index, Label* label)
+{
+
+    labels.push_back({index, label});
+    
+}
+
+void UIManager::AddTable(WindowsKind index, TableWidget* table)
+{
+    if (index >= 0 && index < tables.size())
+    {
+        tables[index].push_back(table);
+    }
+}
+
+
+
+void UIManager::MouseClick(int mouseX, int mouseY)
+{
+}
+
+void UIManager::MouseMove(int mouseX, int mouseY)
+{
+}
+
+void UIManager::MouseWheel(int mouseX, int mouseY, int wheel)
+{
+
+}
+
+void UIManager::Init()
+{
+    instance = new UIManager();
+}
+
+void UIManager::Run()
+{
+        switch (NowWindow)
+        {
+        case loadWindow:
+            for (auto iter = labels.begin(); iter != labels.end(); iter++)
+            {
+                if (iter->kind == loadWindow)
+                {
+                    iter->label->Draw();
+                }
+            }
+            break;
+        case loginWindow:
+            break;
+        case mainWindow:
+            break;
+    }
+}

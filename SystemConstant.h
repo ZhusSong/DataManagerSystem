@@ -42,7 +42,7 @@ enum COLORS
 	NormalColor_3 = 9,
 	//鼠标进入时的颜色
 	EnterColor_3 = 10,
-	//鼠标点击时的颜色
+	//鼠标点击时的颜色 
 	ClickColor_3 = 11,
 };
 
