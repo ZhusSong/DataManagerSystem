@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "SystemConstant.h"
 using namespace std;
 
 class TextBox
@@ -18,16 +19,20 @@ private:
     bool isSelected;
     bool showCursor;
     int cursorPos;
+    int index;
 
 public:
-    TextBox(int x, int y, int width, int height, int maxWord)
-        : x(x), y(y), width(width), height(height), maxWord(maxWord), isSelected(false), showCursor(false), cursorPos(0)
+    TextBox(int x, int y, int width, int height, int maxWord,int index)
+        : x(x), y(y), width(width), height(height), maxWord(maxWord), isSelected(false), showCursor(false), cursorPos(0),index(-1)
     {
     }
 
-    const wstring& GetText() const
+    const wstring& GetText(int _index) const
     {
-        return text;
+        if (index == _index)
+        {
+            return text;
+        }
     }
 
     bool GetSelect() const

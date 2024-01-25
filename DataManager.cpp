@@ -82,6 +82,11 @@ bool DataManager::FindAccount(char* name)
 	return false;
 }
 
+bool DataManager::CheckPassWord(char* name, char* password)
+{
+	return false;
+}
+
 bool DataManager::LoadAccount()
 {
 	ifstream infile("./Accounts/account.dat", ios::binary);

@@ -3,10 +3,13 @@ void Button::CheckMouseOver(int mouseX, int mouseY)
 {
     isMouseOver = (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height);
 
-    if (isMouseOver) {
-        scale = 0.9f;
+    if (isMouseOver) 
+    {
+        scale = 0.95f;
     }
-    else {
+    else 
+    {
+        isMouseClick =false;
         scale = 1.0f;
     }
 }
@@ -15,9 +18,10 @@ bool Button::CheckClick(int mouseX, int mouseY)
 {
     if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
     {
+        isMouseClick = true;
         onClick();
         isMouseOver = false;
-        scale = 1.0f;
+        scale = 0.9f;
         return true;
     }
     return false;
@@ -32,16 +36,21 @@ void Button::Draw()
 
     if (isMouseOver)
     {
-        setlinecolor(RGB(0, 120, 215));
-        setfillcolor(RGB(229, 241, 251));
-
+        setlinecolor(BLUE);
+        setfillcolor(RGB(rgb[COLORS::EnterColor_1].r, rgb[COLORS::EnterColor_1].g, rgb[COLORS::EnterColor_1].b));
     }
-    else
+    else if(isMouseClick)
     {
-        setlinecolor(RGB(173, 173, 173));
-        setfillcolor(RGB(225, 225, 225));
-    }
+        setlinecolor(YELLOW);
+        setfillcolor(RGB(rgb[COLORS::ClickColor_1].r, rgb[COLORS::ClickColor_1].g, rgb[COLORS::ClickColor_1].b));
 
+    }
+    else 
+    {
+        setlinecolor(BLACK);
+        setfillcolor(RGB(rgb[COLORS::NormalColor_1].r, rgb[COLORS::NormalColor_1].g, rgb[COLORS::NormalColor_1].b));
+
+    }
     //将参数中的wstring类型转换为const char*类型
     const char* _text = nullptr;
     size_t bufferSize = 0;
@@ -52,12 +61,12 @@ void Button::Draw()
         _text = buffer.data();
     }
 
-    fillrectangle(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight);
-    settextcolor(BLACK);
+    fillroundrect(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight,50,50);
+    settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);
-    settextstyle(20 * scale, 0, _T("宋体"));
+    settextstyle(30 * scale, 0, _T("Arial"));
     int textX = scaledX + (scaledWidth - textwidth(_text)) / 2;
-    int textY = scaledY + (scaledHeight - textheight(_T("宋体"))) / 2;
+    int textY = scaledY + (scaledHeight - textheight(_T("Arial"))) / 2;
     outtextxy(textX, textY, _text);
 }
 

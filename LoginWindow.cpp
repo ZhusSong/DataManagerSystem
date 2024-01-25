@@ -5,6 +5,41 @@
 
 //指针初始化
 LoginWindow* LoginWindow::instance = nullptr;
+void LoginWindow::Login()
+{
+	wstring text = UIManager::Instance()->GetTextFromTextBox(0);
+
+	 char* userName = nullptr;
+	 char* userPassword = nullptr;
+	size_t bufferSize = 0;
+	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+	std::vector<char> buffer(bufferSize + 1);
+	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+	{
+		userName = buffer.data();
+	}
+
+
+	if (DataManager::Instance()->FindAccount(userName))
+	{
+		if (DataManager::Instance()->CheckPassWord(userName, userPassword))
+		{
+			MessageBox(GetHWnd(), "Successful!", "login", MB_OK);
+
+			Sleep(200);
+			NowWindow = mainWindow;
+		}
+	}
+	else
+	{
+		MessageBox(GetHWnd(),"User name is wrong!","error",MB_OK);
+	}
+
+}
+void LoginWindow::Register()
+{
+
+}
 LoginWindow* LoginWindow::Instance()
 {
 	return instance;
@@ -25,6 +60,26 @@ void LoginWindow::Init()
 	instance = new LoginWindow();
 
 	DataManager::Instance()->LoadAccount();
+	//添加用户名输入框
+	UIManager::Instance()->CreateLabel(WindowsKind::loginWindow,
+		300, 100, 400, 60, L"Please input your account name");
+	UIManager::Instance()->CreateTextBox(WindowsKind::loginWindow,
+		300, 170, 400, 60, 20,0);
+	//添加密码输入框
+	UIManager::Instance()->CreateLabel(WindowsKind::loginWindow,
+		300, 240, 400, 60, L"Please input your account password");
+	UIManager::Instance()->CreateTextBox(WindowsKind::loginWindow,
+		300, 310, 400, 60, 20,1);
+	//添加登录按钮
+	UIManager::Instance()->CreateButton(WindowsKind::loginWindow,
+		350, 400, 300, 80, L"Login", [&]() {
+			Login();
+		},0);
+	//添加注册按钮
+	UIManager::Instance()->CreateButton(WindowsKind::loginWindow,
+		350, 500, 300, 80, L"Register", [&]() {
+			Register();
+		},1);
 	/*char a[20] = "user02";
 	char b[20] = "1234";
 
@@ -33,5 +88,5 @@ void LoginWindow::Init()
 
 void LoginWindow::Run()
 {
-	
+
 }

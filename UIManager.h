@@ -42,6 +42,8 @@ private:
     vector<TextBoxs>textBoxs;
     vector<vector<TableWidget*>> tables;
     vector<Labels> labels;
+    //当前点击的按钮索引
+    int NowClickButton = -1;
 
     void AddPage(IMAGE* page);
 
@@ -57,16 +59,17 @@ public:
 
     void CreatePage();
 
-    void CreateButton(WindowsKind index, Button* button);
+    void CreateButton(WindowsKind index, int x, int y, int width, int height, const wstring& text, const function<void()>& onClick,int number);
 
-    void CreateTextBox(WindowsKind index, TextBox* inputBox);
+    void CreateTextBox(WindowsKind index, int x, int y, int width, int height, int maxWord,int number);
 
     void CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text);
 
     void CreateTable(WindowsKind index, TableWidget* table);
     void GetNowWindowKind(WindowsKind index);
 
-  
+    //从输入框处得到输入值
+    wstring GetTextFromTextBox(int index);
 
 
     void MouseClick(int mouseX, int mouseY);
@@ -74,6 +77,8 @@ public:
     void MouseMove(int mouseX, int mouseY);
 
     void MouseWheel(int mouseX, int mouseY, int wheel);
+
+    void KeyInput(wchar_t ch);
 
     void Init();
     void Run();

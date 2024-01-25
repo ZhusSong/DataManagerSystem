@@ -84,8 +84,10 @@ public:
 	int InitData();
 	//读取用户数据
 	bool LoadAccount();
-	//寻找用户是否已登记
+	//寻找用户是否存在
 	bool FindAccount(char* name);
+	//验证用户密码
+	bool CheckPassWord(char* name, char* password);
 	//创建新用户
 	bool CreateAccount(char* name, char* password);
 	//添加新数据

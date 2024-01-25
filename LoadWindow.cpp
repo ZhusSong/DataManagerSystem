@@ -57,21 +57,20 @@ void LoadWindow::Init()
 
 void LoadWindow::Run()
 {
-	if (Progress <=100) 
+	if (Progress == 100)
 	{
-		if (100 - Progress <= 1.0f)
+		Sleep(400);
+		NowWindow = loginWindow;
+		cleardevice();
+		return;
+	}
+		DrawProgressBar();
+		Progress += 100/ DataCount;
+		Sleep(400); 
+		if (Progress >= 100)
 		{
 			Progress = 100;
 		}
-		DrawProgressBar();
-		Progress += 100/ DataCount;
-		Sleep(400);
-		if (Progress >= 100)
-		{
-			Sleep(100);
-			NowWindow = loginWindow;
-			cleardevice();
-		}
-	}
+		
 		
 }

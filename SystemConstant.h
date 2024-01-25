@@ -5,6 +5,8 @@
 //******************
 
 #include <graphics.h>
+#include <string>
+#include <vector>
 
 
 //最大文件条数
@@ -58,7 +60,7 @@ RGBs rgb = { {220,220,220},
 
 	{128,138,135},
 	{192,192,192},
-	{41,36,33},
+	{110,110,110},
 
 	{218,165,105},
 	{255,227,132},
@@ -77,3 +79,18 @@ enum WindowsKind
 	polyWindow = 3,
 };
 extern enum WindowsKind NowWindow;
+
+static char* ChangeStringToChar(std::wstring text)
+{
+	char* _text = nullptr;
+
+	size_t bufferSize = 0;
+	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+	std::vector<char> buffer(bufferSize + 1);
+	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+	{
+		_text = buffer.data();
+	}
+
+	return _text;
+}
