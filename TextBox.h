@@ -22,19 +22,16 @@ private:
     int index;
 
 public:
-    TextBox(int x, int y, int width, int height, int maxWord,int index)
-        : x(x), y(y), width(width), height(height), maxWord(maxWord), isSelected(false), showCursor(false), cursorPos(0),index(-1)
+    TextBox(int x, int y, int width, int height, int maxWord,int _index)
+        : x(x), y(y), width(width), height(height), maxWord(maxWord), isSelected(false), showCursor(false), cursorPos(0),index(_index)
     {
     }
 
-    const wstring& GetText(int _index) const
-    {
-        if (index == _index)
-        {
-            return text;
-        }
+    const wstring& GetText();
+    int GetInedx()
+    { 
+        return index;
     }
-
     bool GetSelect() const
     {
         return isSelected;

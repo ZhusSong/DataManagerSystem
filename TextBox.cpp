@@ -1,4 +1,15 @@
 #include "TextBox.h"
+const wstring& TextBox::GetText()
+{
+    if (text.size() > 0 && text.size() <= 20)
+    {
+        return text;
+    }
+    else
+    {
+        return L"";
+    }
+}
 void TextBox::Draw()
 {
     if (isSelected)

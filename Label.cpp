@@ -13,14 +13,14 @@ void Label::Draw()
 
     //将参数中的wstring类型转换为const char*类型
      char* _text=nullptr;
-     _text= ChangeStringToChar(text);
-   /* size_t bufferSize = 0;
+  //   _text= ChangeStringToChar(text);
+    size_t bufferSize = 0;
     wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
     std::vector<char> buffer(bufferSize + 1);
     if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
     {
         _text = buffer.data();
-    }*/
+    }
 
     settextstyle(height * 0.8, 0, _T("Arial"));
     int textX = x + (width - textwidth(_text)) / 2;

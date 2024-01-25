@@ -69,7 +69,7 @@ public:
     void GetNowWindowKind(WindowsKind index);
 
     //从输入框处得到输入值
-    wstring GetTextFromTextBox(int index);
+    wstring GetTextFromTextBox(int index) const;
 
 
     void MouseClick(int mouseX, int mouseY);

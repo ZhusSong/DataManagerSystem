@@ -8,31 +8,33 @@ LoginWindow* LoginWindow::instance = nullptr;
 void LoginWindow::Login()
 {
 	wstring text = UIManager::Instance()->GetTextFromTextBox(0);
-
-	 char* userName = nullptr;
-	 char* userPassword = nullptr;
-	size_t bufferSize = 0;
-	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
-	std::vector<char> buffer(bufferSize + 1);
-	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+	if (text.size() > 0 && text.size() <= 20)
 	{
-		userName = buffer.data();
-	}
-
-
-	if (DataManager::Instance()->FindAccount(userName))
-	{
-		if (DataManager::Instance()->CheckPassWord(userName, userPassword))
+		char* userName = nullptr;
+		char* userPassword = nullptr;
+		size_t bufferSize = 0;
+		wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+		std::vector<char> buffer(bufferSize + 1);
+		if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
 		{
-			MessageBox(GetHWnd(), "Successful!", "login", MB_OK);
-
-			Sleep(200);
-			NowWindow = mainWindow;
+			userName = buffer.data();
 		}
-	}
-	else
-	{
-		MessageBox(GetHWnd(),"User name is wrong!","error",MB_OK);
+
+
+		if (DataManager::Instance()->FindAccount(userName))
+		{
+			if (DataManager::Instance()->CheckPassWord(userName, userPassword))
+			{
+				MessageBox(GetHWnd(), "Successful!", "login", MB_OK);
+
+				Sleep(200);
+				NowWindow = mainWindow;
+			}
+		}
+		else
+		{
+			MessageBox(GetHWnd(),"User name is wrong!","error",MB_OK);
+		}
 	}
 
 }

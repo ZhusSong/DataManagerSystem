@@ -50,15 +50,16 @@ void UIManager::GetNowWindowKind(WindowsKind index)
     thisKind = index;
 }
 
-wstring UIManager::GetTextFromTextBox(int index)
+ wstring UIManager::GetTextFromTextBox(int index) const
 {
     for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
     {
-        if (iter->kind == NowWindow)
+        if (iter->kind == NowWindow&& iter->textBox->GetInedx()== index)
         {
-           return iter->textBox->GetText(index);
+            return iter->textBox->GetText();
         }
     }
+
 }
 
 void UIManager::AddPage(IMAGE* page)
