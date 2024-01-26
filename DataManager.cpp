@@ -5,12 +5,7 @@ DataManager* DataManager::instance = nullptr;
 //类的初始化
 DataManager::DataManager()
 {
-	char a[20] = "user02";
-	char b[20] = "1234";
-
 	FileCount = InitData();
-//	AccountDatas.push_back({ "user","123" });
-//	CreateAccount(a, b);
 }
 
 //内存释放 
@@ -39,31 +34,41 @@ int DataManager::GetDataCount()
 	return FileCount;
 }
 
+bool DataManager::InitPolyData()
+{
+	return false;
+}
+
 int DataManager::InitData()
 {
 	int fileCount=0;
-	const string FolderPath = "./Datas";
+	const string FolderPath = "./InitialDatas";
 	std::vector<double> numericalData;
 	int row;
-	string s ;
+	wstring s ;
 	for (const auto& entry :filesystem::directory_iterator(FolderPath))
 	{
 		if (entry.is_regular_file() && entry.path().extension() == ".txt")
 		{
 			ifstream inputFile(entry.path());
-			if (inputFile.is_open()) {
-				double value;
-				while (inputFile >> value) {
-					s = entry.path().filename().string();
+			if (inputFile.is_open())
+			{
+				double value=0;
+				while (inputFile >> value)
+				{
+					s = entry.path().filename().wstring();
 					numericalData.push_back(value);
 				}
-				row = numericalData.size();
-				PolyDatas.push_back({ s,row,numericalData,NULL,NULL,NULL,NULL,NULL,NULL,false });
-				inputFile.close();
 			}
-			else {
+			else 
+			{
 				std::cerr << "Error opening file: " << entry.path() << std::endl;
 			}
+			row = numericalData.size();
+			Datas.push_back({ s,row,numericalData });
+			//清空缓存
+			numericalData.clear();
+			inputFile.close();
 		}
 		fileCount+=1;
 	}
@@ -84,6 +89,16 @@ bool DataManager::FindAccount(char* name)
 
 bool DataManager::CheckPassWord(char* name, char* password)
 {
+	for (const auto& account : AccountDatas)
+	{
+		if (strcmp(account.name, name) == 0)
+		{
+				if (strcmp(account.password, password) == 0)
+				{
+					return true;
+				}
+		}
+	}
 	return false;
 }
 
@@ -144,20 +159,34 @@ bool DataManager::CreateAccount(char* name, char* password)
 	}
 }
 
-bool DataManager::AddData()
+bool DataManager::AddData(string& name, vector<double>& data)
 {
 	return false;
 }
 
-bool DataManager::DeleteData()
+bool DataManager::DeleteData(string& name)
 {
 
 	return false;
 }
 
-bool DataManager::SaveData()
+bool DataManager::SavePolyData()
 {
 	return false;
+}
+
+vector<vector<wstring>>& DataManager::GetInitialData()
+{
+
+	wstring name,row;
+	vector<vector<wstring>> newList;
+	for (auto iter = Datas.begin(); iter != Datas.end(); iter++)
+	{
+		name = iter->filename;
+		row =  to_wstring(iter->row);
+		newList.push_back({ name,row });
+	}
+	return newList;
 }
 
 void DataManager::SortDataByRow()

@@ -16,8 +16,8 @@ private:
 	void Login();
 	//注册
 	void Register();
-	wstring name;
-	wstring password;
+	//退出
+	void Exit();
 
 public:
 	static  LoginWindow* Instance();

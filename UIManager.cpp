@@ -35,20 +35,36 @@ void UIManager::CreateTextBox(WindowsKind index, int x, int y, int width, int he
     AddTextBox(index, textBox);
 }
 
+void UIManager::ClearTextBox()
+{
+    for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+    {
+        iter->textBox->Clear();
+    }
+
+
+}
+
 void UIManager::CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text)
 {
     Label* label = new Label(x, y, width, height, text);
     AddLabel(index,label);
 }
 
-void UIManager::CreateTable(WindowsKind index, TableWidget* table)
+void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int height, int visibleRowCount)
 {
+    TableWidget* table = new TableWidget(x,y,width,  height, visibleRowCount);
+    table->setData(DataManager::Instance()->GetInitialData());
+    switch (index)
+    {
+    case mainWindow:
+
+        break;
+    }
+    AddTable(index, table);
+
 }
 
-void UIManager::GetNowWindowKind(WindowsKind index)
-{
-    thisKind = index;
-}
 
  wstring UIManager::GetTextFromTextBox(int index) const
 {
@@ -85,12 +101,9 @@ void UIManager::AddLabel(WindowsKind index, Label* label)
     
 }
 
-void UIManager::AddTable(WindowsKind index, TableWidget* table)
+void UIManager::AddTable(WindowsKind index, TableWidget* _table)
 {
-    if (index >= 0 && index < tables.size())
-    {
-        tables[index].push_back(table);
-    }
+    tables.push_back({index,_table});
 }
 
 

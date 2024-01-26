@@ -14,6 +14,8 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <locale>
+#include <codecvt>
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -21,11 +23,21 @@ namespace fs = std::filesystem;
 class DataManager
 {
 public:
-	//数据结构体
+	//原始数据结构体
+	typedef struct
+	{
+		wstring filename;
+		//数据条数
+		int row;
+		//数据值
+		vector<double> data;
+	}InitialData;
+
+	//已处理数据结构体
 	typedef struct 
 	{
 		//文件名
-		string filename;
+		wstring filename;
 		//数据条数
 		int row;
 		//数据值
@@ -42,7 +54,7 @@ public:
 		char Nmean;
 		//噪声方差
 		char Nvar;
-		//是否已存入信息管理系统
+		//是否已进行过处理
 		bool status;
 	}PolyfitInfo;
 	//账号
@@ -62,9 +74,11 @@ public:
 private:
 	//单例
 	static  DataManager* instance;
-
+	//原始数据列表
+	vector<InitialData> Datas;
+	//已处理的数据列表
 	vector<PolyfitInfo> PolyDatas;
-
+	//账户数据列表
 	vector<Account> AccountDatas;
 
 
@@ -76,12 +90,28 @@ public:
 	~DataManager();
 	void Init();
 	static DataManager* Instance();
-	//创建随机数文件,数据数大于1小于1000
+	//创建随机原始文件,数据数大于1小于1000
 	bool CreateRandomData(int count);
 	//获取数据文件夹中的文件个数
 	int GetDataCount();
-	//加载已有数据
+	//加载已处理过的数据
+	bool InitPolyData();
+
+	//加载已有的原始数据
 	int InitData();
+
+	//添加新原始数据
+	bool AddData(string& name, vector<double>& data);
+
+	//删除原始数据
+	bool DeleteData(string& name);
+
+	//保存已处理的数据
+	bool SavePolyData();
+
+	//返回原始数据列表
+	vector<vector<wstring>>& GetInitialData();
+
 	//读取用户数据
 	bool LoadAccount();
 	//寻找用户是否存在
@@ -90,12 +120,6 @@ public:
 	bool CheckPassWord(char* name, char* password);
 	//创建新用户
 	bool CreateAccount(char* name, char* password);
-	//添加新数据
-	bool AddData();
-	//删除数据
-	bool DeleteData();
-	//保存数据
-	bool SaveData();
 	//根据数据条数进行排序
 	void SortDataByRow();
 

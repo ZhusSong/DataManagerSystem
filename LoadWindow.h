@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 //****************
-//加载界面头文件
+//加载界面，负责文件的加载动画
 //****************
 #include "UIManager.h"
 #include "SystemConstant.h"

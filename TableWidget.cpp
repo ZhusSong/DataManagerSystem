@@ -86,9 +86,9 @@ void TableWidget::draw()
 
     setlinecolor(BLACK);
     settextstyle(12, 0, _T("Arial"));
-
+    //计算需要绘制的行数
     int rowCount = min(visibleRowCount, static_cast<int>(data.size()));
-
+    //绘制表头
     int headerY = y;
     int columnX = x;
     for (int j = 0; j < data[0].size(); ++j) {
@@ -99,7 +99,7 @@ void TableWidget::draw()
         outtextxy(textX, textY, *data[0][j].c_str());
         columnX += columnWidth;
     }
-
+    //绘制表格内容
     for (int i = 1; i < rowCount; ++i) {
         int rowY = y + i * rowHeight;
         int dataIndex = i + scrollOffset;
@@ -122,16 +122,16 @@ void TableWidget::draw()
             columnX += columnWidth;
         }
     }
-
+    //绘制滚动条背景
     int scrollbarX = x + width;
     setfillcolor(LIGHTGRAY);
     solidrectangle(scrollbarX, y, scrollbarX + scrollbarWidth, y + height);
-
+    //计算滑块位置和大小
     int handleX = scrollbarX;
     int handleWidth = scrollbarWidth;
     int maxHandleY = height - handleHeight;
     handleY = maxHandleY * double(scrollOffset) / (data.size() - visibleRowCount);
-
+    //绘制滑块
     setfillcolor(DARKGRAY);
     solidrectangle(handleX, y + handleY, handleX + handleWidth, y + handleY + handleHeight);
 }

@@ -10,11 +10,15 @@ private:
     int y;
     int width;
     int height;
+    //最大可见行数
     int visibleRowCount;
+    //行高度
     int rowHeight;
     int scrollOffset;
     vector<vector<wstring>> data;
+    //列宽度
     vector<int> columnWidths;
+    //被选中的行
     int selectedRow;
     int scrollbarWidth;
     int handleHeight;
@@ -42,7 +46,7 @@ public:
         return data[selectedRow][col];
     }
 
-    void setData(const vector<vector<wstring>>& newData)
+    void setData(const vector<vector<wstring>> newData)
     {
         data = newData;
         calculateColumnWidths();

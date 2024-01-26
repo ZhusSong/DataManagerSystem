@@ -25,6 +25,7 @@ void WindowsManager::Init()
 	instance = new WindowsManager();
 	LoadWindow::Instance()->Init();
 	LoginWindow::Instance()->Init();
+	MainWindow::Instance()->Init();
 }
 
 void WindowsManager::Run()
@@ -35,7 +36,6 @@ void WindowsManager::Run()
 		switch (NowWindow)
 		{
 		case loadWindow:
-
 			cleardevice();
 			LoadWindow::Instance()->Run();
 			UIManager::Instance()->Run();
@@ -46,6 +46,8 @@ void WindowsManager::Run()
 			LoginWindow::Instance()->Run();
 			break;
 		case mainWindow:
+			UIManager::Instance()->Run();
+			MainWindow::Instance()->Run();
 			break;
 		default:
 			break;

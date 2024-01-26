@@ -7,6 +7,7 @@
 #include "UIManager.h"
 #include "LoginWindow.h"
 #include "LoadWindow.h"
+#include "MainWindow.h"
 #include "SystemConstant.h"
 
 class WindowsManager
