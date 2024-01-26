@@ -1,6 +1,6 @@
 #include "TableWidget.h"
 
-void TableWidget::calculateColumnWidths()
+void TableWidget::CalculateColumnWidths()
 {
     columnWidths.clear();
     if (!data.empty())
@@ -25,7 +25,7 @@ void TableWidget::calculateColumnWidths()
         it = (float)it / sumWidth * width;
 }
 
-void TableWidget::scrollUp()
+void TableWidget::ScrollUp()
 {
     if (scrollOffset > 0)
     {
@@ -37,7 +37,7 @@ void TableWidget::scrollUp()
     }
 }
 
-void TableWidget::scrollDown()
+void TableWidget::ScrollDown()
 {
     int maxScrollOffset = data.size() - visibleRowCount;
     if (scrollOffset < maxScrollOffset)
@@ -46,27 +46,27 @@ void TableWidget::scrollDown()
     }
 }
 
-void TableWidget::scroll(int mouseX, int mouseY, int wheel)
+void TableWidget::Scroll(int mouseX, int mouseY, int wheel)
 {
-    if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
+    if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height && canBeSelected)
     {
         if (wheel > 0)
         {
-            scrollUp();
+            ScrollUp();
         }
         else if (wheel < 0) {
-            scrollDown();
+            ScrollDown();
         }
     }
 }
 
-void TableWidget::handleMouseClick(int mouseX, int mouseY)
+void TableWidget::HandleMouseClick(int mouseX, int mouseY)
 {
-    if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
+    if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height&&canBeSelected)
     {
         int clickedRow = (mouseY - y) / rowHeight + scrollOffset;
 
-        if (clickedRow >= 0 && clickedRow < static_cast<int>(data.size()))
+        if (clickedRow > 0 && clickedRow < static_cast<int>(data.size()))
         {
             selectedRow = clickedRow;
         }
@@ -77,15 +77,18 @@ void TableWidget::handleMouseClick(int mouseX, int mouseY)
     }
 }
 
-void TableWidget::draw()
+void TableWidget::Draw()
 {
+    canBeSelected = true;
+    const char* _text = nullptr;
+    size_t bufferSize = 0;
     setbkmode(1);
 
     setfillcolor(WHITE);
     solidrectangle(x, y, x + width, y + height);
 
     setlinecolor(BLACK);
-    settextstyle(12, 0, _T("Arial"));
+    settextstyle(14, 0, _T("Arial"));
     //计算需要绘制的行数
     int rowCount = min(visibleRowCount, static_cast<int>(data.size()));
     //绘制表头
@@ -93,10 +96,20 @@ void TableWidget::draw()
     int columnX = x;
     for (int j = 0; j < data[0].size(); ++j) {
         int columnWidth = columnWidths[j];
+
+        //将参数中的wstring类型转换为const char*类型
+        wcstombs_s(&bufferSize, nullptr, 0, data[0][j].c_str(), 0);
+        std::vector<char> buffer(bufferSize + 1);
+        if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, data[0][j].c_str(), bufferSize) == 0)
+        {
+            _text = buffer.data();
+        }
+
         rectangle(columnX, headerY, columnX + columnWidth, headerY + rowHeight);
-        int textX = columnX + (columnWidth - textwidth(*data[0][j].c_str())) / 2;
+        int textX = columnX + (columnWidth - textwidth(_text)) / 2;
         int textY = headerY + (rowHeight - textheight(_T("Arial"))) / 2;
-        outtextxy(textX, textY, *data[0][j].c_str());
+        settextcolor(BLACK);
+        outtextxy(textX, textY, _text);
         columnX += columnWidth;
     }
     //绘制表格内容
@@ -104,21 +117,32 @@ void TableWidget::draw()
         int rowY = y + i * rowHeight;
         int dataIndex = i + scrollOffset;
         columnX = x;
-        for (int j = 0; dataIndex < data.size() && j < data[dataIndex].size(); ++j) {
+        for (int j = 0; dataIndex < data.size() && j < data[dataIndex].size(); ++j)
+        {
             int columnWidth = columnWidths[j];
             bool isSelectedRow = (dataIndex == selectedRow);
-            if (isSelectedRow) {
+            if (isSelectedRow) 
+            {
                 setfillcolor(LIGHTBLUE);
                 settextcolor(RED);
             }
-            else {
+            else 
+            {
                 setfillcolor(WHITE);
                 settextcolor(BLACK);
             }
+            //将参数中的wstring类型转换为const char*类型
+            wcstombs_s(&bufferSize, nullptr, 0, data[dataIndex][j].c_str(), 0);
+            std::vector<char> buffer(bufferSize + 1);
+            if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, data[dataIndex][j].c_str(), bufferSize) == 0)
+            {
+                _text = buffer.data();
+            }
+
             fillrectangle(columnX, rowY, columnX + columnWidth, rowY + rowHeight);
-            int textX = columnX + (columnWidth - textwidth(*data[dataIndex][j].c_str())) / 2;
+            int textX = columnX + (columnWidth - textwidth(_text)) / 2;
             int textY = rowY + (rowHeight - textheight(_T("Arial"))) / 2;
-            outtextxy(textX, textY, *data[dataIndex][j].c_str());
+            outtextxy(textX, textY, _text);
             columnX += columnWidth;
         }
     }
@@ -134,4 +158,9 @@ void TableWidget::draw()
     //绘制滑块
     setfillcolor(DARKGRAY);
     solidrectangle(handleX, y + handleY, handleX + handleWidth, y + handleY + handleHeight);
+}
+
+void TableWidget::DrawNewTable()
+{
+
 }

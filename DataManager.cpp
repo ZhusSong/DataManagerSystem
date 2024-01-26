@@ -45,6 +45,10 @@ int DataManager::InitData()
 	const string FolderPath = "./InitialDatas";
 	std::vector<double> numericalData;
 	int row;
+	//噪声均值
+	double Nmean;
+	//噪声方差
+	double Nvar;
 	wstring s ;
 	for (const auto& entry :filesystem::directory_iterator(FolderPath))
 	{
@@ -65,7 +69,9 @@ int DataManager::InitData()
 				std::cerr << "Error opening file: " << entry.path() << std::endl;
 			}
 			row = numericalData.size();
-			Datas.push_back({ s,row,numericalData });
+			Nmean = mean(numericalData);
+			Nvar = variance(numericalData);
+			Datas.push_back({ s,row,numericalData,Nmean,Nvar});
 			//清空缓存
 			numericalData.clear();
 			inputFile.close();
@@ -129,13 +135,12 @@ bool DataManager::CreateAccount(char* name, char* password)
 		Account ac;
 		strncpy_s(ac.name, name, sizeof(ac.name) - 1);
 		strncpy_s(ac.password, password, sizeof(ac.password) - 1);
-		ac.name[sizeof(ac.name) - 1] = '\0'; // Ensure null-terminated strings
+		ac.name[sizeof(ac.name) - 1] = '\0'; 
 		ac.password[sizeof(ac.password) - 1] = '\0';
 
 		AccountDatas.push_back(ac);
 
 		ofstream outfile("./Accounts/account.dat", ios::binary);
-		// Check if the file is opened successfully
 		if (!outfile.is_open()) 
 		{
 			return false;
@@ -164,33 +169,68 @@ bool DataManager::AddData(string& name, vector<double>& data)
 	return false;
 }
 
-bool DataManager::DeleteData(string& name)
+bool DataManager::DeleteData(int index)
 {
-
-	return false;
+	wstring oldFileName= Datas[index - 1].filename;
+	Datas.erase(Datas.begin()+(index)-1); 
+	wstring folder = L"./InitialDatas/";
+	wstring filename = folder + oldFileName;
+	string narrowFilename(filename.begin(), filename.end());
+	if (std::remove(narrowFilename.c_str()) != 0)
+	{
+		MessageBox(GetHWnd(), "Fail to delete!", "DELETE", MB_OK);
+		return false;
+	}
+	else
+	{
+		MessageBox(GetHWnd(), "Successfully!", "DELETE", MB_OK);
+		return true;
+	}
 }
 
-bool DataManager::SavePolyData()
-{
-	return false;
-}
 
-vector<vector<wstring>>& DataManager::GetInitialData()
+
+
+const vector<vector<wstring>> DataManager::GetInitialData()
 {
 
-	wstring name,row;
+	wstring name,row,mean,variance;
 	vector<vector<wstring>> newList;
 	for (auto iter = Datas.begin(); iter != Datas.end(); iter++)
 	{
 		name = iter->filename;
 		row =  to_wstring(iter->row);
-		newList.push_back({ name,row });
+		mean = to_wstring(iter->Nmean);
+		variance = to_wstring(iter->Nvar);
+		newList.push_back({ name,row,mean,variance });
 	}
 	return newList;
 }
 
 void DataManager::SortDataByRow()
 {
+}
+
+double DataManager::mean(vector<double> data)
+{
+	double sum = 0;
+	int s = data.size();
+	for (int i=0;i<data.size();i++)
+	{
+		sum += data[i];
+	}
+	return sum/s;
+}
+
+double DataManager::variance(vector<double> data)
+{
+	double M, sum = 0;
+	int s = data.size();
+	int i;
+	M = mean(data);
+	for (i = 0; i < data.size(); i++)
+		sum = sum + (data[i] - M) * (data[i] - M);
+	return sum / s;
 }
 
 double DataManager::arrayscale(double a[], int n)

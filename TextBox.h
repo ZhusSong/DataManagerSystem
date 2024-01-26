@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "SystemConstant.h"
+#include <windows.h>
 using namespace std;
 
 class TextBox

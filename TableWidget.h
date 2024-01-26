@@ -23,6 +23,7 @@ private:
     int scrollbarWidth;
     int handleHeight;
     int handleY;
+    bool canBeSelected;
 
 public:
     TableWidget(int x, int y, int width, int height, int visibleRowCount)
@@ -33,34 +34,37 @@ public:
         scrollOffset = 0;
         scrollbarWidth = 20;
         handleHeight = 30;
-        handleY = 0;
+        handleY = 0; 
+        canBeSelected = false;
     }
 
-    int getSelectedRow() const
+    int GetSelectedRow() const
     {
         return selectedRow;
     }
 
-    wstring getSelectedInfo(int col) const
+    wstring GetSelectedInfo(int col) const
     {
         return data[selectedRow][col];
     }
 
-    void setData(const vector<vector<wstring>> newData)
+    void SetData(const vector<vector<wstring>> newData)
     {
         data = newData;
-        calculateColumnWidths();
+        CalculateColumnWidths();
     }
 
-    void calculateColumnWidths();
+    void CalculateColumnWidths();
 
-    void scrollUp();
+    void ScrollUp();
 
-    void scrollDown();
+    void ScrollDown();
 
-    void scroll(int mouseX, int mouseY, int wheel);
+    void Scroll(int mouseX, int mouseY, int wheel);
 
-    void handleMouseClick(int mouseX, int mouseY);
+    void HandleMouseClick(int mouseX, int mouseY);
 
-    void draw();
+    void Draw();
+    //重新绘制
+    void DrawNewTable();
 };

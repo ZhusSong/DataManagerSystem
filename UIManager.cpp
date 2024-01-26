@@ -41,8 +41,6 @@ void UIManager::ClearTextBox()
     {
         iter->textBox->Clear();
     }
-
-
 }
 
 void UIManager::CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text)
@@ -53,18 +51,27 @@ void UIManager::CreateLabel(WindowsKind index, int x, int y, int width, int heig
 
 void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int height, int visibleRowCount)
 {
-    TableWidget* table = new TableWidget(x,y,width,  height, visibleRowCount);
-    table->setData(DataManager::Instance()->GetInitialData());
+    TableWidget* table = new TableWidget(x, y, width, height, visibleRowCount);
+
+    vector<vector<wstring>> newList;
+    vector<vector<wstring>> newList2;
+
     switch (index)
     {
     case mainWindow:
-
+        newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+        newList2 = DataManager::Instance()->GetInitialData();
+        for (const auto& innerVector : newList2)
+        {
+            newList.push_back(innerVector);
+        }
+        table->SetData(newList);
+        break;
+    default:
         break;
     }
     AddTable(index, table);
-
 }
-
 
  wstring UIManager::GetTextFromTextBox(int index) const
 {
@@ -124,6 +131,13 @@ void UIManager::MouseClick(int mouseX, int mouseY)
             iter->button->CheckClick(mouseX, mouseY);
         }
     }
+    for (auto iter = tables.begin(); iter != tables.end(); iter++)
+    {
+        if (iter->kind == NowWindow)
+        {
+            iter->table->HandleMouseClick(mouseX, mouseY);
+        }
+    }
 }
 
 void UIManager::MouseMove(int mouseX, int mouseY)
@@ -139,7 +153,13 @@ void UIManager::MouseMove(int mouseX, int mouseY)
 
 void UIManager::MouseWheel(int mouseX, int mouseY, int wheel)
 {
-
+    for (auto iter = tables.begin(); iter != tables.end(); iter++)
+    {
+        if (iter->kind == NowWindow)
+        {
+            iter->table->Scroll(mouseX, mouseY,wheel);
+        }
+    }
 }
 
 void UIManager::KeyInput(wchar_t ch)
@@ -160,7 +180,39 @@ void UIManager::KeyInput(wchar_t ch)
         MessageBox(GetHWnd(), "Input Error!","error",MB_OK);
     }
 }
-
+void UIManager::DeleteSelectedData(WindowsKind kind)
+{
+    int nowData = -1;
+    for (auto iter = tables.begin(); iter != tables.end(); iter++)
+    {
+        if (iter->kind == kind)
+        {
+            nowData = iter->table->GetSelectedRow();
+        }
+    }
+    if (DataManager::Instance()->DeleteData(nowData))
+    {
+        for (auto iter = tables.begin(); iter != tables.end(); iter++)
+        {
+            if (iter->kind == kind)
+            {
+                vector<vector<wstring>> newList;
+                vector<vector<wstring>> newList2;
+                newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+                newList2 = DataManager::Instance()->GetInitialData();
+                for (const auto& innerVector : newList2)
+                {
+                    newList.push_back(innerVector);
+                }
+                iter->table->SetData(newList);
+            }
+        }
+    }
+    else
+    {
+        MessageBox(GetHWnd(), "Successfully!", "DELETE", MB_OK);
+    }
+}
 void UIManager::Init()
 {
     instance = new UIManager();
@@ -211,6 +263,10 @@ void UIManager::Run()
             {
                 if (iter->kind == loginWindow)
                 {
+                    if (iter->textBox->GetSelect())
+                    {
+                        iter->textBox->UpdateCursor();
+                    }
                     iter->textBox->Draw();
                 }
             }
@@ -223,6 +279,39 @@ void UIManager::Run()
             }
             break;
         case mainWindow:
+            cleardevice();
+            for (auto iter = labels.begin(); iter != labels.end(); iter++)
+            {
+                if (iter->kind == mainWindow)
+                {
+                    iter->label->Draw();
+                }
+            }
+            for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+            {
+                if (iter->kind == mainWindow)
+                {
+                    if (iter->textBox->GetSelect())
+                    {
+                        iter->textBox->UpdateCursor();
+                    }
+                    iter->textBox->Draw();
+                }
+            }
+            for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+            {
+                if (iter->kind == mainWindow)
+                {
+                    iter->button->Draw();
+                }
+            }
+            for (auto iter = tables.begin(); iter != tables.end(); iter++)
+            {
+                if (iter->kind == mainWindow)
+                {
+                    iter->table->Draw();
+                }
+            }
             break;
     }
 }

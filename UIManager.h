@@ -1,10 +1,14 @@
-﻿#pragma once
+#pragma once
+//******************
+//UI组件，包括标题、按钮、图标等的管理，同时负责处理鼠标事件
+//******************
 #include <graphics.h>
-#include "DataManager.h"
 #include <graphics.h>
 #include <time.h>
 #include <conio.h>
+#include <Windows.h>
 #include <math.h>
+#include "DataManager.h"
 #include "SystemConstant.h"
 #include "Button.h"
 #include "TextBox.h"
@@ -14,7 +18,6 @@
 using namespace std;
 
 
-//UI组件管理
 class UIManager
 {
 	
@@ -61,7 +64,6 @@ private:
 
     //输入框列表，保存所有的输入框对象
     vector<TextBoxs> textBoxs;
-
     //图表列表，保存所有的图表对象
     vector<TableWidgets> tables;
 
@@ -102,6 +104,7 @@ public:
     void CreateTextBox(WindowsKind index, int x, int y, int width, int height, int maxWord,int number);
     //清空输入框
     void ClearTextBox();
+
     void CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text);
 
     void CreateTable(WindowsKind index, int x, int y, int width, int height, int visibleRowCount);
@@ -117,6 +120,9 @@ public:
     void MouseWheel(int mouseX, int mouseY, int wheel);
 
     void KeyInput(wchar_t ch);
+
+    //删除选中数据
+    void DeleteSelectedData(WindowsKind kind);
 
     void Init();
     void Run();

@@ -101,7 +101,7 @@ void TextBox::UpdateCursor()
 {
     static DWORD lastTick = GetTickCount();
     DWORD currentTick = GetTickCount();
-    if (currentTick - lastTick >= 500)
+    if (currentTick - lastTick >= 300)
     {
         showCursor = !showCursor;
         lastTick = currentTick;
