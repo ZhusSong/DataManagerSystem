@@ -30,6 +30,8 @@ public:
 	static  MainWindow* Instance();
 	MainWindow() {};
 	~MainWindow() {};
+	//初始化
 	void Init();
+	//运行
 	void Run();
 };

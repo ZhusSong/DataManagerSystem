@@ -1,4 +1,4 @@
-#include "Label.h"
+﻿#include "Label.h"
 
 void Label::SetText(const std::wstring& newText)
 {
@@ -11,7 +11,7 @@ void Label::Draw()
     settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);
 
-    //将参数中的wstring类型转换为const char*类型
+    //将参数中的wstring类型转换为const char*类型，以便easyX的函数使用
      char* _text=nullptr;
   //   _text= ChangeStringToChar(text);
     size_t bufferSize = 0;

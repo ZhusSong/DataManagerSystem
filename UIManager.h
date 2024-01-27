@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 //******************
 //UI组件，包括标题、按钮、图标等的管理，同时负责处理鼠标事件
 //******************
@@ -64,6 +64,7 @@ private:
 
     //输入框列表，保存所有的输入框对象
     vector<TextBoxs> textBoxs;
+
     //图表列表，保存所有的图表对象
     vector<TableWidgets> tables;
 
@@ -94,37 +95,65 @@ private:
     //index:应用此图表的界面索引
     //table:图表对象
     void AddTable(WindowsKind index, TableWidget* _table);
+
 public:
     static UIManager* Instance();
 
     void CreatePage();
-
+    //创建按钮
+    /*index:创建此按钮的界面索引
+    * x,y,width,height:按钮左上角点的xy值，以及此按钮的宽度与高度值
+    * text:按钮上显示的文字
+    * onClick:点击事件，在创建此按钮的界面中进行事件的注册
+    * number:按钮在界面中对应的索引，管理函数根据此索引判断点击的是哪一个按钮
+    */
     void CreateButton(WindowsKind index, int x, int y, int width, int height, const wstring& text, const function<void()>& onClick,int number);
 
+    //创建输入框
+    /*index:创建此输入框的界面索引
+    * x,y,width,height:输入框左上角点的xy值，以及此输入框的宽度与高度值
+    * maxWord:最大可输入文字数
+    * number:输入框在界面中对应的索引，管理函数根据此索引判断应用哪一个输入框
+    */
     void CreateTextBox(WindowsKind index, int x, int y, int width, int height, int maxWord,int number);
-    //清空输入框
+    
+    //清空所有输入框
     void ClearTextBox();
 
+    //创建标题
+    //参数意义同按钮
     void CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text);
 
+    //创建图表
+    //visibleRowCount:最大显示行数，其余参数同上
     void CreateTable(WindowsKind index, int x, int y, int width, int height, int visibleRowCount);
 
     //从输入框处得到输入值
+    //index:输入框的索引值，管理函数根据此索引值判断想要得到数据的是哪一个输入框
     wstring GetTextFromTextBox(int index) const;
 
+    //刷新图表，设计中一个界面只会拥有一个图表，因此无需索引值
+    void SetNewTable(WindowsKind kind);
 
+    //鼠标点击事件
     void MouseClick(int mouseX, int mouseY);
 
+    //鼠标移动事件
     void MouseMove(int mouseX, int mouseY);
 
+    //鼠标中键滚动事件
     void MouseWheel(int mouseX, int mouseY, int wheel);
 
+    //键盘输入事件
     void KeyInput(wchar_t ch);
 
     //删除选中数据
     void DeleteSelectedData(WindowsKind kind);
 
+    //初始化
     void Init();
+
+    //运行
     void Run();
 	UIManager();
 	virtual ~UIManager();

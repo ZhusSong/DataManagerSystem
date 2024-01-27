@@ -1,6 +1,7 @@
-#include "TextBox.h"
+﻿#include "TextBox.h"
 const wstring& TextBox::GetText()
 {
+    //输入范围为0~20
     if (text.size() > 0 && text.size() <= 20)
     {
         return text;
@@ -10,8 +11,10 @@ const wstring& TextBox::GetText()
         return L"";
     }
 }
+
 void TextBox::Draw()
 {
+    //根据是否被选中绘制颜色
     if (isSelected)
     {
         setfillcolor(RGB(rgb[COLORS::ClickColor_1].r, rgb[COLORS::ClickColor_1].g, rgb[COLORS::ClickColor_1].b));
@@ -24,7 +27,8 @@ void TextBox::Draw()
         setlinecolor(BLACK);
         fillrectangle(x, y, x + width, y + height);
     }
-
+    //绘制文字
+    // _text为输入的文字，_text02为输入文字加上一个字符，目的是判断闪动条的位置
     //将参数中的wstring类型转换为const char*类型
     const char* _text = nullptr;
     const char* _text02 = nullptr;
@@ -49,6 +53,8 @@ void TextBox::Draw()
     outtextxy(x + 5, y + (height - textheight(_T("Arial"))) / 2, _text);
 
     setlinecolor(BLACK);
+
+    //绘制闪动条
     if (isSelected && showCursor)
     {
         int cursorX = x + 5 + textwidth(_text02);
@@ -77,6 +83,7 @@ void TextBox::KeyInput(wchar_t ch)
     {
        switch (ch)
         {
+           //输入的是退格，删除一个文字
         case '\b':
             if (!text.empty() && cursorPos > 0) {
                 text.erase(cursorPos - 1, 1);
@@ -84,10 +91,12 @@ void TextBox::KeyInput(wchar_t ch)
             }
             break;
         case '\r':
+            //输入的是回车
         case '\n':
             cursorPos = text.length();
             isSelected = false;
             break;
+            //输入的是文字
         default:
             if (text.length() < maxWord) {
                 text.insert(cursorPos, 1, ch);
@@ -96,7 +105,7 @@ void TextBox::KeyInput(wchar_t ch)
         }
     }
 }
-
+//更新闪动条
 void TextBox::UpdateCursor()
 {
     static DWORD lastTick = GetTickCount();

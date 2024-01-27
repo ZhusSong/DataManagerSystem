@@ -97,9 +97,11 @@ public:
 	void Init();
 	static DataManager* Instance();
 	//创建随机原始文件,数据数大于1小于1000
-	bool CreateRandomData(int count);
+	wstring CreateRandomData(int count);
+
 	//获取数据文件夹中的文件个数
 	int GetDataCount();
+
 	//加载已处理过的数据
 	bool InitPolyData();
 
@@ -110,6 +112,7 @@ public:
 	bool AddData(string& name, vector<double>& data);
 
 	//删除选中的原始数据
+	//index:被选中的数据索引
 	bool DeleteData(int index);
 
 
@@ -118,12 +121,17 @@ public:
 
 	//读取用户数据
 	bool LoadAccount();
+
 	//寻找用户是否存在
 	bool FindAccount(char* name);
+
 	//验证用户密码
 	bool CheckPassWord(char* name, char* password);
+
 	//创建新用户
 	bool CreateAccount(char* name, char* password);
+
+
 	//根据数据条数进行排序
 	void SortDataByRow();
 	//计算均值

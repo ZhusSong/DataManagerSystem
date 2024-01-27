@@ -43,6 +43,12 @@
     <Filter Include="UIControl\TextBox">
       <UniqueIdentifier>{0aec55f6-d81c-4930-8893-2f605695ac41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Windows\ProcessWindow">
+      <UniqueIdentifier>{2d182d52-5d25-4fb0-a614-55fc1bfbb39e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\ShowProcessWindow">
+      <UniqueIdentifier>{34607191-8919-4079-8160-f3e08c51c661}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,6 +84,12 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Windows\MainWindow</Filter>
     </ClCompile>
+    <ClCompile Include="ProcessWindow.cpp">
+      <Filter>Windows\ProcessWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowProcessWindow.cpp">
+      <Filter>Windows\ShowProcessWindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataManager.h">
@@ -112,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="SystemConstant.h">
       <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessWindow.h">
+      <Filter>Windows\ProcessWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowProcessWindow.h">
+      <Filter>Windows\ShowProcessWindow</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,8 +1,10 @@
-#include "TableWidget.h"
+﻿#include "TableWidget.h"
 
 void TableWidget::CalculateColumnWidths()
 {
+    //重置宽度
     columnWidths.clear();
+
     if (!data.empty())
     {
         columnWidths.resize(data[0].size(), 0);
@@ -83,7 +85,7 @@ void TableWidget::Draw()
     const char* _text = nullptr;
     size_t bufferSize = 0;
     setbkmode(1);
-
+    //绘制表格
     setfillcolor(WHITE);
     solidrectangle(x, y, x + width, y + height);
 
@@ -160,7 +162,8 @@ void TableWidget::Draw()
     solidrectangle(handleX, y + handleY, handleX + handleWidth, y + handleY + handleHeight);
 }
 
-void TableWidget::DrawNewTable()
+void TableWidget::ResetTable()
 {
-
+    scrollOffset = 0;
+    selectedRow = -1;
 }

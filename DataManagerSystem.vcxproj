@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="ProcessWindow.cpp" />
+    <ClCompile Include="ShowProcessWindow.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="DataManager.cpp" />
@@ -153,6 +155,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="ProcessWindow.h" />
+    <ClInclude Include="ShowProcessWindow.h" />
     <ClInclude Include="SystemConstant.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="Button.h" />

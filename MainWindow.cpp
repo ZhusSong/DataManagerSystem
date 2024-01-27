@@ -15,15 +15,24 @@ void MainWindow::AddNewData()
 		}
 		if (count > 0)
 		{
-			UINT yesno = MessageBox(GetHWnd(), "If you want to create random data?", "CREATE", MB_YESNO);
+			/*UINT yesno = MessageBox(GetHWnd(), "If you want to create random data?", "CREATE", MB_YESNO);
 			if (yesno == IDYES)
 			{
-
-			}
-			else
-			{
-
-			}
+				char n[20];
+				InputBox(n, 20, "Please input data's name,use english,numbers or _");
+				DataManager::Instance()->CreateRandomData(n,count);
+			}*/
+			//创建messageBox显示文字
+			wstring n=L"Create ";
+			n+= DataManager::Instance()->CreateRandomData(count);
+			n += L".txt successful!";
+			int size = WideCharToMultiByte(CP_UTF8, 0, n.c_str(), -1, NULL, 0, NULL, NULL);
+			char* buffer = new char[size];
+			WideCharToMultiByte(CP_UTF8, 0, n.c_str(), -1, buffer, size, NULL, NULL);
+			LPCSTR lpcstr = buffer;
+			UINT yesno = MessageBox(GetHWnd(), lpcstr, "CREATE", MB_OK);
+			//刷新图表
+			UIManager::Instance()->SetNewTable(mainWindow);
 		}
 	}
 	else
@@ -52,6 +61,7 @@ bool MainWindow::JudgementNumber(char* s)
 	return true;
 
 }
+
 void MainWindow::DeleteData()
 {
 	UINT yesno = MessageBox(GetHWnd(),"Sure to delete this data?","DELETE",MB_YESNO);
@@ -70,7 +80,8 @@ void MainWindow::ShowProcessData()
 }
 void MainWindow::Return()
 {
-
+	NowWindow = loginWindow;
+	cleardevice();
 }
 MainWindow* MainWindow::Instance()
 {

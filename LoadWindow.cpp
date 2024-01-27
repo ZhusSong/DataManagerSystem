@@ -1,4 +1,4 @@
-#include "LoadWindow.h"
+﻿#include "LoadWindow.h"
 #include "WindowsManager.h"
 //指针初始化
 LoadWindow* LoadWindow::instance = nullptr;
@@ -13,9 +13,11 @@ LoadWindow::~LoadWindow()
 
 void LoadWindow::DrawProgressBar()
 {
+	//外部进度条长度与宽度
 	int barWidth = 800;
 	int barHeight = 150;
 
+	//内部进度条位置
 	int barX = (getmaxx() - barWidth) / 2;
 	int barY = (getmaxy() - barHeight) / 2;
 

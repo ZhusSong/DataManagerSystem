@@ -12,11 +12,11 @@ private:
 
 	//单例
 	static  LoginWindow* instance;
-	//登录
+	//按钮事件:登录
 	void Login();
-	//注册
+	//按钮事件:注册
 	void Register();
-	//退出
+	//按钮事件:退出
 	void Exit();
 
 public:

@@ -13,6 +13,30 @@ UIManager::~UIManager()
 {
 }
 
+void UIManager::SetNewTable(WindowsKind kind)
+{
+    for (auto iter = tables.begin(); iter != tables.end(); iter++)
+    {
+        if (iter->kind == kind)
+        {
+            //两个列表，一个用于初始化表头并结合成总数据，一个用于接收自DataManager获取的数据
+            vector<vector<wstring>> newList;
+            vector<vector<wstring>> newList2;
+            //为图表添加表头
+            newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+            
+            newList2 = DataManager::Instance()->GetInitialData();
+            for (const auto& innerVector : newList2)
+            {
+                newList.push_back(innerVector);
+            }
+            iter->table->SetData(newList);
+            //重置图表
+            iter->table->ResetTable();
+        }
+    }
+}
+
 UIManager* UIManager::Instance()
 {
     return instance;
@@ -59,6 +83,7 @@ void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int heig
     switch (index)
     {
     case mainWindow:
+        //为主界面的图表设置表头
         newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
         newList2 = DataManager::Instance()->GetInitialData();
         for (const auto& innerVector : newList2)
@@ -114,7 +139,7 @@ void UIManager::AddTable(WindowsKind index, TableWidget* _table)
 }
 
 
-
+//事件处理，向每一个有对应事件的成员进行广播，并由其单独处理事件
 void UIManager::MouseClick(int mouseX, int mouseY)
 {
     for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
@@ -164,7 +189,7 @@ void UIManager::MouseWheel(int mouseX, int mouseY, int wheel)
 
 void UIManager::KeyInput(wchar_t ch)
 {
-    //判断输入字符是否是英文字母或数字或操作符
+    //判断输入字符是否是英文字母或数字或操作符，若不是，则弹出错误提示框
     if (iswalpha(ch) || iswdigit(ch)|| ch == L'\n' || ch == L'\b' || ch == '\r')
     {
         for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
@@ -183,6 +208,7 @@ void UIManager::KeyInput(wchar_t ch)
 void UIManager::DeleteSelectedData(WindowsKind kind)
 {
     int nowData = -1;
+    //得到选中数据
     for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
         if (iter->kind == kind)
@@ -190,6 +216,7 @@ void UIManager::DeleteSelectedData(WindowsKind kind)
             nowData = iter->table->GetSelectedRow();
         }
     }
+    //若成功删除数据，则重置图表
     if (DataManager::Instance()->DeleteData(nowData))
     {
         for (auto iter = tables.begin(); iter != tables.end(); iter++)
@@ -205,12 +232,13 @@ void UIManager::DeleteSelectedData(WindowsKind kind)
                     newList.push_back(innerVector);
                 }
                 iter->table->SetData(newList);
+                iter->table->ResetTable();
             }
         }
     }
     else
     {
-        MessageBox(GetHWnd(), "Successfully!", "DELETE", MB_OK);
+        MessageBox(GetHWnd(), "Failed!", "DELETE", MB_OK);
     }
 }
 void UIManager::Init()
@@ -218,8 +246,10 @@ void UIManager::Init()
     instance = new UIManager();
 }
 
+//
 void UIManager::Run()
 {
+    //easyX鼠标事件
     ExMessage msg;
     if (peekmessage(&msg))
     {
@@ -239,6 +269,8 @@ void UIManager::Run()
             break;
         }
     }
+
+         //根据当前界面判断运行哪一处的UI控件事件
         switch (NowWindow)
         {
         case loadWindow:
@@ -312,6 +344,34 @@ void UIManager::Run()
                     iter->table->Draw();
                 }
             }
+            break;  
+        case processWindow:
+                cleardevice();
+                for (auto iter = labels.begin(); iter != labels.end(); iter++)
+                {
+                    if (iter->kind == mainWindow)
+                    {
+                        iter->label->Draw();
+                    }
+                }
+                for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+                {
+                    if (iter->kind == mainWindow)
+                    {
+                        iter->button->Draw();
+                    }
+                }
+                for (auto iter = tables.begin(); iter != tables.end(); iter++)
+                {
+                    if (iter->kind == mainWindow)
+                    {
+                        iter->table->Draw();
+                    }
+                }
+                break;
+        case showProcessWindow:
+                break;
+        default:
             break;
     }
 }

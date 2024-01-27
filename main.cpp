@@ -1,5 +1,5 @@
 ﻿//****************
-//主函数入口
+//主函数入口，仅负责初始化与主管理函数的运行
 //****************
 #include <iostream>
 #include <windows.h>
@@ -17,11 +17,13 @@ int  main()
 	initgraph(WIDTH, HEIGHT);
 	//设置背景颜色
 	setbkcolor(RGB(rgb[COLORS::BackGround].r, rgb[COLORS::BackGround].g, rgb[COLORS::BackGround].b));
-
+	
+	//管理函数初始化
 	DataManager::Instance()->Init();
 	UIManager::Instance()->Init();
 	WindowsManager::Instance()->Init();
 
+	//开始运行
 	UIManager::Instance()->Run();
 	WindowsManager::Instance()->Run();
 	return 0;

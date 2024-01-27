@@ -1,6 +1,7 @@
-#include "Button.h"
+﻿#include "Button.h"
 void Button::CheckMouseOver(int mouseX, int mouseY)
 {
+    //判断鼠标位置是否在此按钮范围内
     isMouseOver = (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height);
 
     if (isMouseOver) 
@@ -16,6 +17,7 @@ void Button::CheckMouseOver(int mouseX, int mouseY)
 
 bool Button::CheckClick(int mouseX, int mouseY)
 {
+    //判断鼠标的点击是否在此按钮内
     if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
     {
         isMouseClick = true;
@@ -29,11 +31,13 @@ bool Button::CheckClick(int mouseX, int mouseY)
 
 void Button::Draw()
 {
+    //计算此按钮的大小
     int scaledWidth = width * scale;
     int scaledHeight = height * scale;
     int scaledX = x + (width - scaledWidth) / 2;
     int scaledY = y + (height - scaledHeight) / 2;
 
+    //根据是否有鼠标事件绘制颜色
     if (isMouseOver)
     {
         setlinecolor(BLUE);
@@ -51,7 +55,8 @@ void Button::Draw()
         setfillcolor(RGB(rgb[COLORS::NormalColor_1].r, rgb[COLORS::NormalColor_1].g, rgb[COLORS::NormalColor_1].b));
 
     }
-    //将参数中的wstring类型转换为const char*类型
+
+    //将参数中的wstring类型转换为const char*类型，以便easyX的函数使用
     const char* _text = nullptr;
     size_t bufferSize = 0;
     wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
@@ -61,6 +66,7 @@ void Button::Draw()
         _text = buffer.data();
     }
 
+    //绘制按钮
     fillroundrect(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight,50,50);
     settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);

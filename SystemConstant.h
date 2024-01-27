@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //******************
 //此处定义了一些常量与全局变量
@@ -54,6 +54,7 @@ typedef struct {
 	BYTE r, g, b;
 }RGBs[12];
 
+//颜色对应的rgb值
 RGBs rgb = { {220,220,220},
 	{163,148,128},
 	{245,245,245},
@@ -76,21 +77,23 @@ enum WindowsKind
 	loadWindow = 0,
 	loginWindow = 1,
 	mainWindow = 2,
-	polyWindow = 3,
+	processWindow = 3,
+	showProcessWindow = 4,
 };
+//当前界面的全局变量
 extern enum WindowsKind NowWindow;
 
-static char* ChangeStringToChar(std::wstring text)
-{
-	char* _text = nullptr;
-
-	size_t bufferSize = 0;
-	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
-	std::vector<char> buffer(bufferSize + 1);
-	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
-	{
-		_text = buffer.data();
-	}
-
-	return _text;
-}
+//static char* ChangeStringToChar(std::wstring text)
+//{
+//	char* _text = nullptr;
+//
+//	size_t bufferSize = 0;
+//	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+//	std::vector<char> buffer(bufferSize + 1);
+//	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+//	{
+//		_text = buffer.data();
+//	}
+//
+//	return _text;
+//}

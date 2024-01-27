@@ -23,9 +23,58 @@ DataManager* DataManager::Instance()
     return instance;
 }
 
-bool DataManager::CreateRandomData(int count)
+wstring DataManager::CreateRandomData(int count)
 {
-	return false;
+	//为新文件命名，命名格式为newData_N,后缀N为当前以此方法创建的文件的总数
+	wstring s=L"newData_";
+	//后缀N
+	int newCount = 0;
+	//为新文件的后缀做判断，若已存在拥有此后缀的文件，则后缀N加1
+	string::size_type idx;
+	vector<wstring> names;
+	for (auto iter = Datas.begin(); iter != Datas.end(); iter++)
+	{
+		idx = iter->filename.find(s);
+		if (idx != string::npos)
+		{
+			names.push_back(iter->filename);
+		}
+	}
+	for (int i = 0; i < names.size(); i++)
+	{
+		idx = names[i].find(to_wstring(newCount));
+		if (idx != string::npos)
+		{
+			newCount++;
+			i = 0;
+		}
+
+	}
+	s += to_wstring(newCount);
+
+	//创建数据，为-100~100的随机双浮点数，保留10位小数
+	vector<double> newDatas;
+	srand(static_cast<unsigned int>(time(NULL)));
+	for (int i = 0; i < count; i++)
+	{
+		double random_double = -100 + static_cast<double>(rand()) / (RAND_MAX / 200.0);
+	//	random_double = trunc(random_double * 1e10) / 1e10;
+		newDatas.push_back(random_double);
+	}
+	double m=mean(newDatas);
+	double v=variance(newDatas);
+	//将新创建的数据存入Datas
+	Datas.push_back({s,count,newDatas,m,v});
+
+	//在文件夹中创建文件,保留8位有效数字
+	wstring folders = L"./InitialDatas/"+s+L".txt";
+	ofstream file(folders);
+	for(int i=0;i<newDatas.size();i++)
+	{
+		file << std::setprecision(8)<< newDatas[i]<<std::endl;
+	}
+
+	return s;
 }
 
 
@@ -43,12 +92,14 @@ int DataManager::InitData()
 {
 	int fileCount=0;
 	const string FolderPath = "./InitialDatas";
+	//数据列表
 	std::vector<double> numericalData;
 	int row;
 	//噪声均值
 	double Nmean;
 	//噪声方差
 	double Nvar;
+	//获取文件
 	wstring s ;
 	for (const auto& entry :filesystem::directory_iterator(FolderPath))
 	{
@@ -60,6 +111,7 @@ int DataManager::InitData()
 				double value=0;
 				while (inputFile >> value)
 				{
+					//获取每一个数据
 					s = entry.path().filename().wstring();
 					numericalData.push_back(value);
 				}
@@ -69,8 +121,11 @@ int DataManager::InitData()
 				std::cerr << "Error opening file: " << entry.path() << std::endl;
 			}
 			row = numericalData.size();
+			//获取均值
 			Nmean = mean(numericalData);
+			//获取方差
 			Nvar = variance(numericalData);
+			//存入数据信息
 			Datas.push_back({ s,row,numericalData,Nmean,Nvar});
 			//清空缓存
 			numericalData.clear();
@@ -119,7 +174,9 @@ bool DataManager::LoadAccount()
 	else
 	{
 		Account ac;
-		while (infile.read(reinterpret_cast<char*>(&ac), sizeof(Account))) {
+		//读取用户数据
+		while (infile.read(reinterpret_cast<char*>(&ac), sizeof(Account))) 
+		{
 			AccountDatas.push_back(ac);
 		}
 		infile.close();
@@ -147,6 +204,7 @@ bool DataManager::CreateAccount(char* name, char* password)
 		}
 		else
 		{
+			//写入数据
 			outfile.write(reinterpret_cast<const char*>(AccountDatas.data()), AccountDatas.size() * sizeof(Account));
 			if (outfile.fail())
 			{
@@ -164,6 +222,7 @@ bool DataManager::CreateAccount(char* name, char* password)
 	}
 }
 
+
 bool DataManager::AddData(string& name, vector<double>& data)
 {
 	return false;
@@ -171,14 +230,23 @@ bool DataManager::AddData(string& name, vector<double>& data)
 
 bool DataManager::DeleteData(int index)
 {
+	//得到数据名
 	wstring oldFileName= Datas[index - 1].filename;
+	//在Datas中删除此数据
 	Datas.erase(Datas.begin()+(index)-1); 
+	//文件操作，判断此文件是否有后缀名txt，若没有则为其添加
 	wstring folder = L"./InitialDatas/";
+	string::size_type idx= oldFileName.find(L".txt");
+	if (idx == string::npos)
+	{
+		oldFileName += L".txt";
+	}
 	wstring filename = folder + oldFileName;
 	string narrowFilename(filename.begin(), filename.end());
+	//删除操作
 	if (std::remove(narrowFilename.c_str()) != 0)
 	{
-		MessageBox(GetHWnd(), "Fail to delete!", "DELETE", MB_OK);
+	//	MessageBox(GetHWnd(), "Fail to delete!", "DELETE", MB_OK);
 		return false;
 	}
 	else
@@ -193,7 +261,7 @@ bool DataManager::DeleteData(int index)
 
 const vector<vector<wstring>> DataManager::GetInitialData()
 {
-
+	
 	wstring name,row,mean,variance;
 	vector<vector<wstring>> newList;
 	for (auto iter = Datas.begin(); iter != Datas.end(); iter++)
