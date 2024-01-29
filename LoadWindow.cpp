@@ -8,7 +8,7 @@ LoadWindow::LoadWindow()
 
 LoadWindow::~LoadWindow()
 {
-	delete instance;
+	UnInit();
 }
 
 void LoadWindow::DrawProgressBar()
@@ -53,8 +53,13 @@ void LoadWindow::Init()
 	instance = new LoadWindow();
 	instance ->DataCount = DataManager::Instance()->GetDataCount();
 
-	UIManager::Instance()->CreateLabel(WindowsKind::loadWindow,
+	UIManager::Instance()->CreateLabel(10,
 		300, 100, 400, 80, L"Data System");
+}
+
+void LoadWindow::UnInit()
+{
+	delete instance;
 }
 
 void LoadWindow::Run()
@@ -64,7 +69,6 @@ void LoadWindow::Run()
 		Sleep(400);
 		NowWindow = loginWindow;
 		cleardevice();
-		return;
 	}
 		DrawProgressBar();
 		Progress += 100/ DataCount;

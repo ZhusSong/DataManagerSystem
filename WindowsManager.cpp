@@ -1,4 +1,5 @@
 ﻿#include "WindowsManager.h"
+
 //指针初始化
 WindowsManager* WindowsManager::instance = nullptr;
 
@@ -43,11 +44,9 @@ void WindowsManager::Run()
 			break;
 		case loginWindow:
 			UIManager::Instance()->Run();
-			LoginWindow::Instance()->Run();
 			break;
 		case mainWindow:
 			UIManager::Instance()->Run();
-			MainWindow::Instance()->Run();
 			break;
 		default:
 			break;

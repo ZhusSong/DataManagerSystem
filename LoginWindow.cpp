@@ -129,28 +129,28 @@ void LoginWindow::Init()
 
 	DataManager::Instance()->LoadAccount();
 	//添加用户名输入框
-	UIManager::Instance()->CreateLabel(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateLabel(0,
 		300, 100, 400, 60, L"Please input your account name");
-	UIManager::Instance()->CreateTextBox(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateTextBox(0,
 		300, 170, 400, 60, 20,0);
 	//添加密码输入框
-	UIManager::Instance()->CreateLabel(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateLabel(1,
 		300, 240, 400, 60, L"Please input your account password");
-	UIManager::Instance()->CreateTextBox(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateTextBox(1,
 		300, 310, 400, 60, 20,1);
 	//添加登录按钮
-	UIManager::Instance()->CreateButton(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateButton(0,
 		350, 400, 300, 80, L"Login", [&]() {
 			Login();
 		},0);
 	//添加注册按钮
-	UIManager::Instance()->CreateButton(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateButton(1,
 		350, 500, 300, 80, L"Register", [&]() {
 			Register();
 		},1);
 
 	//添加退出按钮
-	UIManager::Instance()->CreateButton(WindowsKind::loginWindow,
+	UIManager::Instance()->CreateButton(2,
 		350, 600, 300, 80, L"Exit", [&]() {
 			Exit();
 		}, 2);

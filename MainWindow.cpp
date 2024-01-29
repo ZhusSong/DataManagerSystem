@@ -67,7 +67,7 @@ void MainWindow::DeleteData()
 	UINT yesno = MessageBox(GetHWnd(),"Sure to delete this data?","DELETE",MB_YESNO);
 	if (yesno == IDYES)
 	{
-		UIManager::Instance()->DeleteSelectedData(mainWindow);
+		UIManager::Instance()->DeleteSelectedData(0);
 	}
 }
 void MainWindow::ProcessData() 
@@ -92,33 +92,33 @@ void MainWindow::Init()
 {
 	instance = new MainWindow();
 	//创建分析按钮
-	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+	UIManager::Instance()->CreateButton(3,
 		200, 100, 200, 80, L"Process", [&]() {
 			ProcessData();
-		}, 0);
+		}, 3);
 	//创建添加新数据按钮
-	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+	UIManager::Instance()->CreateButton(4,
 		750, 200, 250, 80, L"AddNewData", [&]() {
 			AddNewData();
-		}, 1);
+		}, 4);
 	//创建删除数据按钮
-	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+	UIManager::Instance()->CreateButton(5,
 		750, 300, 250, 80, L"DeleteData", [&]() {
 			DeleteData();
-		}, 2);
+		}, 5);
 	//创建显示已处理数据按钮
-	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+	UIManager::Instance()->CreateButton(6,
 		750, 400, 250, 80, L"ShowProcessData", [&]() {
 			ShowProcessData();
-		}, 3);
+		}, 6);
 	//创建返回按钮
-	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+	UIManager::Instance()->CreateButton(7,
 		750, 500, 250, 80, L"Return", [&]() {
 			Return();
-		}, 4);
+		}, 7);
 
 	//创建待处理的数据图表
-	UIManager::Instance()->CreateTable(mainWindow,150,200,500,500,8);
+	UIManager::Instance()->CreateTable(0,150,200,500,500,8);
 }
 
 void MainWindow::Run()
