@@ -2,6 +2,7 @@
 #include <graphics.h>
 #include <string>
 #include <vector>
+#include "SystemConstant.h"
 using namespace std;
 
 class TableWidget {
@@ -26,6 +27,7 @@ private:
     int handleHeight;
     int handleY;
     bool canBeSelected;
+
 
 public:
     //初始化

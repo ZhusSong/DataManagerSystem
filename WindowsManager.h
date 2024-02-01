@@ -4,10 +4,15 @@
 //******************
 #include <iostream>
 #include <stdlib.h>
+#include <chrono>
+#include <thread>
+#include <Windows.h>
 #include "UIManager.h"
 #include "LoginWindow.h"
 #include "LoadWindow.h"
 #include "MainWindow.h"
+#include "ProcessWindow.h"
+#include "ShowProcessWindow.h"
 #include "SystemConstant.h"
 
 class WindowsManager
@@ -17,7 +22,11 @@ private:
 	static  WindowsManager* instance;
 	//窗口管理指针，每次更换窗口时更换指定对象
 	UIManager* Window;
-
+	double DeltaTime;
+	double CurrTime;
+	double PrevTime;
+	double SecondssPerCount;
+	bool SetFrame(int frame);
 public:
 	
 	static  WindowsManager* Instance();

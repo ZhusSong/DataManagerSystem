@@ -3,10 +3,11 @@
 //******************
 //此处定义了一些常量与全局变量
 //******************
-
 #include <graphics.h>
 #include <string>
 #include <vector>
+#include <stdlib.h>
+#include <wchar.h>
 
 
 //最大文件条数
@@ -21,7 +22,7 @@ enum COLORS
 	BackGround = 0,
 	//边线颜色
 	LineColor = 1,
-	//文字颜色
+	//文字颜色_白
 	TextColor = 2,
 	//颜色组01:灰色系
 	//常态颜色
@@ -55,7 +56,7 @@ typedef struct {
 }RGBs[12];
 
 //颜色对应的rgb值
-RGBs rgb = { {220,220,220},
+RGBs rgb = { {105 ,105 ,105},
 	{163,148,128},
 	{245,245,245},
 
@@ -83,17 +84,85 @@ enum WindowsKind
 //当前界面的全局变量
 extern enum WindowsKind NowWindow;
 
-//static char* ChangeStringToChar(std::wstring text)
-//{
-//	char* _text = nullptr;
-//
-//	size_t bufferSize = 0;
-//	wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
-//	std::vector<char> buffer(bufferSize + 1);
-//	if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
-//	{
-//		_text = buffer.data();
-//	}
-//
-//	return _text;
-//}
+
+
+//排序种类
+enum SortKind
+{
+	//通过均值
+	ByMean = 0,
+	//通过方差
+	ByVar = 1,
+	//通过行数
+	ByRow = 2,
+};
+//数据操作种类
+enum DataProcessKind
+{
+	//正常显示
+	Normal = 0,
+	//平滑
+	Smoothness = 1,
+	//去除离群值
+	Removal = 2,
+};
+//工具函数
+class SystemUtiliy
+{
+public:
+
+	 /// 将wstring转为char*，以便easyX使用
+	 static char* ChangeStringToChar(std::wstring& text)
+	{
+		int length = text.size()+1;
+		char* _text=new char[length];
+
+		size_t bufferSize = 0;
+		wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+		std::vector<char> buffer(bufferSize + 1);
+		if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+		{
+			strcpy_s(_text, length, buffer.data());
+		}
+		return _text;
+	}
+
+	 /// 将wchar转为char*，以便获取inputbox内容
+	 static char* ChangeWcharToChar( wchar_t* text)
+	 {
+		 char* m_char;
+		 size_t len ;
+		 if (wcstombs_s(&len, NULL, 0, text, _TRUNCATE) != 0) {
+			 perror("wcstombs_s");
+			 exit(EXIT_FAILURE);
+		 }
+		 // Allocate memory for the char string
+		 m_char = (char*)malloc((len + 1) * sizeof(char)); // Include space for null terminator
+		 if (m_char == NULL) {
+			 perror("malloc");
+			 exit(EXIT_FAILURE);
+		 }
+
+		 // Convert wide character string to multibyte character string
+		 if (wcstombs_s(NULL, m_char, len + 1, text, _TRUNCATE) != 0) {
+			 perror("wcstombs_s");
+			 exit(EXIT_FAILURE);
+		 }
+		 return m_char;
+	 }
+
+	 //判断输入是否是数字
+	 static bool JudgementNumber(const char* s)
+	 {
+		 int len = strlen(s);
+		 for (int i = 0; i < len; i++)
+		 {
+			 if (!isdigit(s[i]))
+				 return false;
+		 }
+		 return true;
+
+	 }
+};
+
+

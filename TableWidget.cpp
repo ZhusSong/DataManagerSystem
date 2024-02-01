@@ -8,7 +8,7 @@ void TableWidget::CalculateColumnWidths()
     if (!data.empty())
     {
         columnWidths.resize(data[0].size(), 0);
-        for (const auto& row : data)
+        for (auto& row : data)
         {
             for (size_t j = 0; j < row.size(); ++j)
             {
@@ -82,37 +82,41 @@ void TableWidget::HandleMouseClick(int mouseX, int mouseY)
 void TableWidget::Draw()
 {
     canBeSelected = true;
-    const char* _text = nullptr;
-    size_t bufferSize = 0;
+  //  const char* _text = nullptr;
+   // size_t bufferSize = 0;
     setbkmode(1);
     //绘制表格
     setfillcolor(WHITE);
     solidrectangle(x, y, x + width, y + height);
 
     setlinecolor(BLACK);
-    settextstyle(14, 0, _T("Arial"));
+    settextstyle(14, 0, _T("宋体"));
     //计算需要绘制的行数
     int rowCount = min(visibleRowCount, static_cast<int>(data.size()));
     //绘制表头
     int headerY = y;
     int columnX = x;
-    for (int j = 0; j < data[0].size(); ++j) {
+    for (int j = 0; j < data[0].size(); ++j)
+    {
         int columnWidth = columnWidths[j];
 
         //将参数中的wstring类型转换为const char*类型
-        wcstombs_s(&bufferSize, nullptr, 0, data[0][j].c_str(), 0);
+      /*  wcstombs_s(&bufferSize, nullptr, 0, data[0][j].c_str(), 0);
         std::vector<char> buffer(bufferSize + 1);
         if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, data[0][j].c_str(), bufferSize) == 0)
         {
             _text = buffer.data();
-        }
+        }*/
+        wstring w = data[0][j].c_str();
+        char* _text =SystemUtiliy::ChangeStringToChar(w);
 
         rectangle(columnX, headerY, columnX + columnWidth, headerY + rowHeight);
-        int textX = columnX + (columnWidth - textwidth(_text)) / 2;
-        int textY = headerY + (rowHeight - textheight(_T("Arial"))) / 2;
+        int textX = columnX + (columnWidth - textwidth(w.c_str())) / 2;
+        int textY = headerY + (rowHeight - textheight(_T("宋体"))) / 2;
         settextcolor(BLACK);
-        outtextxy(textX, textY, _text);
+        outtextxy(textX, textY, w.c_str());
         columnX += columnWidth;
+        delete _text;
     }
     //绘制表格内容
     for (int i = 1; i < rowCount; ++i) {
@@ -134,18 +138,23 @@ void TableWidget::Draw()
                 settextcolor(BLACK);
             }
             //将参数中的wstring类型转换为const char*类型
-            wcstombs_s(&bufferSize, nullptr, 0, data[dataIndex][j].c_str(), 0);
+            wstring w2 = data[dataIndex][j].c_str();
+
+            char* _text2 = SystemUtiliy::ChangeStringToChar(w2);
+           /* wcstombs_s(&bufferSize, nullptr, 0, data[dataIndex][j].c_str(), 0);
             std::vector<char> buffer(bufferSize + 1);
             if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, data[dataIndex][j].c_str(), bufferSize) == 0)
             {
                 _text = buffer.data();
-            }
+            }*/
 
             fillrectangle(columnX, rowY, columnX + columnWidth, rowY + rowHeight);
-            int textX = columnX + (columnWidth - textwidth(_text)) / 2;
-            int textY = rowY + (rowHeight - textheight(_T("Arial"))) / 2;
-            outtextxy(textX, textY, _text);
+            int textX = columnX + (columnWidth - textwidth(w2.c_str())) / 2;
+            int textY = rowY + (rowHeight - textheight(_T("宋体"))) / 2;
+            outtextxy(textX, textY, w2.c_str());
             columnX += columnWidth;
+
+            delete _text2;
         }
     }
     //绘制滚动条背景
@@ -160,10 +169,11 @@ void TableWidget::Draw()
     //绘制滑块
     setfillcolor(DARKGRAY);
     solidrectangle(handleX, y + handleY, handleX + handleWidth, y + handleY + handleHeight);
+
 }
 
 void TableWidget::ResetTable()
 {
     scrollOffset = 0;
-    selectedRow = -1;
+    selectedRow = -1; 
 }

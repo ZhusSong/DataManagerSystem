@@ -1,6 +1,6 @@
 ﻿#pragma once
 //******************
-//UI组件，包括标题、按钮、图标等的管理，同时负责处理鼠标事件
+//UI组件管理，标题、按钮、图标等的管理与绘制，同时负责处理鼠标事件，以及数据界面的绘制
 //******************
 #include <graphics.h>
 #include <graphics.h>
@@ -96,6 +96,17 @@ private:
     //table:图表对象
     void AddTable(WindowsKind index, TableWidget* _table);
 
+    //当前处理的数据在列表中的索引
+    int nowProcessData = -1;
+
+    int maxOrder= -1;
+
+    //显示处理界面的文件信息
+    void ShowFileInfo();
+
+   
+
+
 public:
     static UIManager* Instance();
 
@@ -149,6 +160,12 @@ public:
 
     //删除选中数据
     void DeleteSelectedData(WindowsKind kind);
+
+    //处理选中数据
+    void ProcessSelectedData(WindowsKind kind, int maxorder);
+
+    //重置处理数据索引
+    void SetNowProcessData();
 
     //初始化
     void Init();

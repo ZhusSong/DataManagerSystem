@@ -16,6 +16,8 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
+#include<map>
+#include "SystemConstant.h"
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -46,22 +48,12 @@ public:
 		wstring filename;
 		//数据条数
 		int row;
-		//数据值
-		vector<double> data;
-		//不同阶次多项式拟合
-		double polyCoeff[10][10];
-		//不同阶次多项式拟合误差
-		double fitError[10];
-		//最高拟合阶数_用户输入
+		//最高拟合阶数
 		int MaxOrder;
-		//最佳拟合阶数
-		int OptiOrder;
 		//噪声均值
-		char Nmean;
+		double Nmean;
 		//噪声方差
-		char Nvar;
-		//是否已进行过处理
-		bool status;
+		double Nvar;
 	}PolyfitInfo;
 	//账号
 	typedef struct
@@ -70,13 +62,14 @@ public:
 		char password[20];
 	}Account;
 
-	//
+	//显示区域
 	typedef struct
 	{
 		int x0, y0, x1, y1;  // top left point and the bottom right point
 	}PlotArea;
+	PlotArea  parea = { 400,400,824,700 }; // 直方图显示区域，
+	PlotArea dataarea = { 50,10,900,300 }; // 数据曲线显示区域
 
-	int COLOR[16];
 private:
 	//单例
 	static  DataManager* instance;
@@ -88,8 +81,16 @@ private:
 	vector<Account> AccountDatas;
 
 
+	int Colour[16] = { BLACK,BLUE,GREEN,CYAN,RED,MAGENTA,BROWN,LIGHTGRAY,DARKGRAY,LIGHTBLUE,LIGHTGREEN,LIGHTCYAN,LIGHTRED,LIGHTMAGENTA,YELLOW,WHITE };
+
+
 	//文件个数s
 	 int FileCount = 0;
+
+	 PolyfitInfo thisData;
+
+	 //对X坐标从小到大排序
+	 vector<double> SortByX(vector<double> datas);
 
 public:
 	DataManager();
@@ -108,16 +109,29 @@ public:
 	//加载已有的原始数据
 	int InitData();
 
-	//添加新原始数据
-	bool AddData(string& name, vector<double>& data);
+
+	//保存已处理数据
+	bool SaveProcessData();
 
 	//删除选中的原始数据
 	//index:被选中的数据索引
 	bool DeleteData(int index);
 
+	//返回选中的数据
+	//index:被选中的数据索引
+	InitialData GetSelectedData(int index);
+
+	//分析选中数据
+	void ProcessData(int index,int maxorder);
+
 
 	//返回原始数据列表
 	const vector<vector<wstring>> GetInitialData();
+
+
+
+	//返回已处理数据列表
+	const vector<vector<wstring>> GetPolyfitData();
 
 	//读取用户数据
 	bool LoadAccount();
@@ -131,6 +145,9 @@ public:
 	//创建新用户
 	bool CreateAccount(char* name, char* password);
 
+
+	//创建新用户
+	void SortDatas(WindowsKind  dkind, SortKind skind);
 
 	//根据数据条数进行排序
 	void SortDataByRow();
@@ -154,8 +171,7 @@ public:
 	// 多项式函数处理
 	double fx(double x, double coeffs[], int degree);
 
-	// 图形显示  文件： datagraph.cpp
+
 	void showhisto(double result[], int n, PlotArea area);
-	void showpinfo(PolyfitInfo pinfo, PlotArea farea);
 	void showdata(double dataX[], double dataY[], int n, long color, PlotArea p);
 };

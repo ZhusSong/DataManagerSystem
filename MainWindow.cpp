@@ -1,43 +1,34 @@
-#include "MainWindow.h"
+﻿#include "MainWindow.h"
 
 //指针初始化
 MainWindow* MainWindow::instance = nullptr;
 void MainWindow::AddNewData()
 {
-	char s[10];
-	InputBox(s,10, "Please input the data count");
-	if (sizeof(s) != 0 && JudgementNumber(s))
+	wchar_t s[10];
+	InputBox(s,10, L"请输入数据条数，最大1000:");
+	const char* s2=SystemUtiliy::ChangeWcharToChar(s);
+	if (sizeof(s) != 0 && SystemUtiliy::JudgementNumber(s2))
 	{
-		int count = atoi(s);
-		if (count > 2000)
+		int count = atoi(s2);
+		if (count > 1000)
 		{
-			count = 2000;
+			count = 1000;
 		}
 		if (count > 0)
 		{
-			/*UINT yesno = MessageBox(GetHWnd(), "If you want to create random data?", "CREATE", MB_YESNO);
-			if (yesno == IDYES)
-			{
-				char n[20];
-				InputBox(n, 20, "Please input data's name,use english,numbers or _");
-				DataManager::Instance()->CreateRandomData(n,count);
-			}*/
 			//创建messageBox显示文字
 			wstring n=L"Create ";
 			n+= DataManager::Instance()->CreateRandomData(count);
-			n += L".txt successful!";
-			int size = WideCharToMultiByte(CP_UTF8, 0, n.c_str(), -1, NULL, 0, NULL, NULL);
-			char* buffer = new char[size];
-			WideCharToMultiByte(CP_UTF8, 0, n.c_str(), -1, buffer, size, NULL, NULL);
-			LPCSTR lpcstr = buffer;
-			UINT yesno = MessageBox(GetHWnd(), lpcstr, "CREATE", MB_OK);
+			n += L" successful!";
+
+			MessageBox(GetHWnd(), n.c_str(), L"CREATE", MB_OK);
 			//刷新图表
 			UIManager::Instance()->SetNewTable(mainWindow);
 		}
 	}
 	else
 	{
-		UINT yesno = MessageBox(GetHWnd(), "Please input numbers!", "ERROR", MB_YESNO);
+		UINT yesno = MessageBox(GetHWnd(), L"请输入数字!", L"ERROR", MB_YESNO);
 		if (yesno == IDYES)
 		{
 			AddNewData();
@@ -47,24 +38,14 @@ void MainWindow::AddNewData()
 			return;
 		}
 	}
-
+	delete s2;
 }
 
-bool MainWindow::JudgementNumber(char* s)
-{
-	int len = strlen(s);
-	for (int i = 0; i < len; i++)
-	{
-		if (!isdigit(s[i]))
-			return false;
-	}
-	return true;
 
-}
 
 void MainWindow::DeleteData()
 {
-	UINT yesno = MessageBox(GetHWnd(),"Sure to delete this data?","DELETE",MB_YESNO);
+	UINT yesno = MessageBox(GetHWnd(),L"确定删除此数据?",L"DELETE",MB_YESNO);
 	if (yesno == IDYES)
 	{
 		UIManager::Instance()->DeleteSelectedData(mainWindow);
@@ -72,16 +53,44 @@ void MainWindow::DeleteData()
 }
 void MainWindow::ProcessData() 
 {
+	UINT yesno = MessageBox(GetHWnd(), L"确定分析此数据?", L"CONFIRM", MB_YESNO);
+	if (yesno == IDYES)
+	{
+		int	count = 7;
+		NowWindow = processWindow;
+		UIManager::Instance()->ProcessSelectedData(mainWindow, count);
+	}
 
 }
 void MainWindow::ShowProcessData()
 {
-
+	NowWindow = showProcessWindow;
+	//刷新图表
+	UIManager::Instance()->SetNewTable(showProcessWindow);
 }
 void MainWindow::Return()
 {
 	NowWindow = loginWindow;
-	cleardevice();
+}
+void MainWindow::SortByMean()
+{
+	DataManager::Instance()->SortDatas(mainWindow, ByMean);
+	//刷新图表
+	UIManager::Instance()->SetNewTable(mainWindow);
+}
+void MainWindow::SortByVar()
+{
+
+	DataManager::Instance()->SortDatas(mainWindow, ByVar);
+	//刷新图表
+	UIManager::Instance()->SetNewTable(mainWindow);
+}
+void MainWindow::SortByRow()
+{
+
+	DataManager::Instance()->SortDatas(mainWindow, ByRow);
+	//刷新图表
+	UIManager::Instance()->SetNewTable(mainWindow);
 }
 MainWindow* MainWindow::Instance()
 {
@@ -93,35 +102,46 @@ void MainWindow::Init()
 	instance = new MainWindow();
 	//创建分析按钮
 	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
-		200, 100, 200, 80, L"Process", [&]() {
+		50, 100, 200, 80, L"处理数据", [&]() {
 			ProcessData();
 		}, 0);
+	//创建按均值排序按钮
+	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+		260, 100, 200, 80, L"均值小到大排序", [&]() {
+			SortByMean();
+		}, 1);
+	//创建按方差排序按钮
+	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+		470, 100, 200, 80, L"方差小到大排序", [&]() {
+			SortByVar();
+		}, 2);
+	//创建按行数排序按钮
+	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
+		680, 100, 200, 80, L"行数小到大排序", [&]() {
+			SortByRow();
+		}, 3);
 	//创建添加新数据按钮
 	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
-		750, 200, 250, 80, L"AddNewData", [&]() {
+		750, 200, 250, 80, L"添加新数据", [&]() {
 			AddNewData();
-		}, 1);
+		}, 4);
 	//创建删除数据按钮
 	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
-		750, 300, 250, 80, L"DeleteData", [&]() {
+		750, 300, 250, 80, L"删除选中数据", [&]() {
 			DeleteData();
-		}, 2);
+		}, 5);
 	//创建显示已处理数据按钮
 	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
-		750, 400, 250, 80, L"ShowProcessData", [&]() {
+		750, 400, 250, 80, L"显示已处理数据", [&]() {
 			ShowProcessData();
-		}, 3);
+		}, 6);
 	//创建返回按钮
 	UIManager::Instance()->CreateButton(WindowsKind::mainWindow,
-		750, 500, 250, 80, L"Return", [&]() {
+		750, 500, 250, 80, L"返回", [&]() {
 			Return();
-		}, 4);
+		}, 7);
 
 	//创建待处理的数据图表
-	UIManager::Instance()->CreateTable(mainWindow,150,200,500,500,8);
+	UIManager::Instance()->CreateTable(mainWindow, 50,200,620,500,8);
 }
 
-void MainWindow::Run()
-{
-
-}

@@ -24,6 +24,8 @@ public:
 	~LoadWindow();
 	//初始化
 	void Init();
+	//初始化
+	void UnInit();
 	//运行
 	void Run();
 };

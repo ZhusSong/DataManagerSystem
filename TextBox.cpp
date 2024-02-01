@@ -17,22 +17,23 @@ void TextBox::Draw()
     //根据是否被选中绘制颜色
     if (isSelected)
     {
-        setfillcolor(RGB(rgb[COLORS::ClickColor_1].r, rgb[COLORS::ClickColor_1].g, rgb[COLORS::ClickColor_1].b));
+        setfillcolor(RGB(rgb[COLORS::ClickColor_2].r, rgb[COLORS::ClickColor_2].g, rgb[COLORS::ClickColor_2].b));
         setlinecolor(BLUE);
         fillrectangle(x, y, x + width, y + height);
     }
     else
     {
-        setfillcolor(RGB(rgb[COLORS::NormalColor_1].r, rgb[COLORS::NormalColor_1].g, rgb[COLORS::NormalColor_1].b));
+        setfillcolor(RGB(rgb[COLORS::NormalColor_2].r, rgb[COLORS::NormalColor_2].g, rgb[COLORS::NormalColor_2].b));
         setlinecolor(BLACK);
         fillrectangle(x, y, x + width, y + height);
     }
     //绘制文字
     // _text为输入的文字，_text02为输入文字加上一个字符，目的是判断闪动条的位置
     //将参数中的wstring类型转换为const char*类型
-    const char* _text = nullptr;
-    const char* _text02 = nullptr;
-    size_t bufferSize = 0;
+    char* _text = SystemUtiliy::ChangeStringToChar(text);
+    wstring w = text.substr(0, cursorPos).c_str();
+     char* _text2 = SystemUtiliy::ChangeStringToChar(w);
+  /*  size_t bufferSize = 0;
     size_t bufferSize2 = 0;
     wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
     wcstombs_s(&bufferSize2, nullptr, 0, text.substr(0, cursorPos).c_str(), 0);
@@ -45,21 +46,23 @@ void TextBox::Draw()
     if (wcstombs_s(&bufferSize2, buffer2.data(), bufferSize2 + 1, text.substr(0, cursorPos).c_str(), bufferSize2) == 0)
     {
         _text02 = buffer.data();
-    }
+    }*/
     settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);
-    settextstyle(height * 3 / 4, 0, _T("Arial"));
+    settextstyle(height * 3 / 4, 0, _T("宋体"));
 
-    outtextxy(x + 5, y + (height - textheight(_T("Arial"))) / 2, _text);
+    outtextxy(x + 5, y + (height - textheight(_T("宋体"))) / 2, text.c_str());
 
     setlinecolor(BLACK);
 
     //绘制闪动条
     if (isSelected && showCursor)
     {
-        int cursorX = x + 5 + textwidth(_text02);
+        int cursorX = x + 5 + textwidth(w.c_str());
         line(cursorX, y + 2 + height / 8, cursorX, y + height * 7 / 8 - 2);
     }
+    delete _text;
+    delete _text2;
 }
 
 bool TextBox::CheckClick(int mouseX, int mouseY)
@@ -108,8 +111,8 @@ void TextBox::KeyInput(wchar_t ch)
 //更新闪动条
 void TextBox::UpdateCursor()
 {
-    static DWORD lastTick = GetTickCount();
-    DWORD currentTick = GetTickCount();
+   static DWORD lastTick = GetTickCount();
+   DWORD currentTick = GetTickCount();
     if (currentTick - lastTick >= 300)
     {
         showCursor = !showCursor;

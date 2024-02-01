@@ -1,7 +1,7 @@
-ï»¿#include "UIManager.h"
+#include "UIManager.h"
 
 
-//æŒ‡é’ˆåˆå§‹åŒ–
+//Ö¸Õë³õÊ¼»¯
 UIManager* UIManager::instance = nullptr;
 
 UIManager::UIManager()
@@ -11,19 +11,53 @@ UIManager::UIManager()
 
 UIManager::~UIManager()
 {
+    delete instance;
 }
 
+void UIManager::ShowFileInfo()
+{
+    settextstyle(30, 0, _T("ËÎÌå"));   
+    int textX = 50;
+    int textY = 590;
+    settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
+    wstring text = L"FileName: ";
+    text +=DataManager::Instance()->GetSelectedData(nowProcessData).filename;
+
+    wstring text2 = L"Mean is: ";
+    text2 += to_wstring(DataManager::Instance()->GetSelectedData(nowProcessData).Nmean);
+
+    wstring text3 = L"Variance is: ";
+    text3 += to_wstring(DataManager::Instance()->GetSelectedData(nowProcessData).Nvar);
+
+
+
+    char* _text = SystemUtiliy::ChangeStringToChar(text);
+    char* _text2 = SystemUtiliy::ChangeStringToChar(text2);
+    char* _text3 = SystemUtiliy::ChangeStringToChar(text3);
+
+    outtextxy(textX, textY, text.c_str());
+     textX = 50;
+     textY = 630;
+    outtextxy(textX, textY, text2.c_str());
+     textX = 50;
+     textY = 670;
+    outtextxy(textX, textY, text3.c_str());
+
+    delete(_text);
+    delete(_text2);
+    delete(_text3);
+}
 void UIManager::SetNewTable(WindowsKind kind)
 {
+    //Á½¸öÁĞ±í£¬Ò»¸öÓÃÓÚ³õÊ¼»¯±íÍ·²¢½áºÏ³É×ÜÊı¾İ£¬Ò»¸öÓÃÓÚ½ÓÊÕ×ÔDataManager»ñÈ¡µÄÊı¾İ
+    vector<vector<wstring>> newList;
+    vector<vector<wstring>> newList2;
     for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
-        if (iter->kind == kind)
+        if (iter->kind == mainWindow)
         {
-            //ä¸¤ä¸ªåˆ—è¡¨ï¼Œä¸€ä¸ªç”¨äºåˆå§‹åŒ–è¡¨å¤´å¹¶ç»“åˆæˆæ€»æ•°æ®ï¼Œä¸€ä¸ªç”¨äºæ¥æ”¶è‡ªDataManagerè·å–çš„æ•°æ®
-            vector<vector<wstring>> newList;
-            vector<vector<wstring>> newList2;
-            //ä¸ºå›¾è¡¨æ·»åŠ è¡¨å¤´
-            newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+            //ÎªÍ¼±íÌí¼Ó±íÍ·
+            newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
             
             newList2 = DataManager::Instance()->GetInitialData();
             for (const auto& innerVector : newList2)
@@ -31,11 +65,30 @@ void UIManager::SetNewTable(WindowsKind kind)
                 newList.push_back(innerVector);
             }
             iter->table->SetData(newList);
-            //é‡ç½®å›¾è¡¨
+            //ÖØÖÃÍ¼±í
             iter->table->ResetTable();
+            newList.clear();
+            newList2.clear();
+        }
+        if (iter->kind == showProcessWindow)
+        {
+            //ÎªÍ¼±íÌí¼Ó±íÍ·
+            newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î",L"×î´óÄâºÏ½×Êı" });
+            newList2 = DataManager::Instance()->GetPolyfitData();
+            for (const auto& innerVector : newList2)
+            {
+                newList.push_back(innerVector);
+            }
+            iter->table->SetData(newList);
+            iter->table->ResetTable();
+
+            newList.clear();
+            newList2.clear();
+
         }
     }
 }
+
 
 UIManager* UIManager::Instance()
 {
@@ -83,9 +136,21 @@ void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int heig
     switch (index)
     {
     case mainWindow:
-        //ä¸ºä¸»ç•Œé¢çš„å›¾è¡¨è®¾ç½®è¡¨å¤´
-        newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+        //ÎªÖ÷½çÃæµÄÍ¼±íÉèÖÃ±íÍ·
+        newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
         newList2 = DataManager::Instance()->GetInitialData();
+        for (const auto& innerVector : newList2)
+        {
+            newList.push_back(innerVector);
+        }
+        table->SetData(newList);
+        newList.clear();
+        newList2.clear();
+        break;
+    case showProcessWindow:
+        //ÎªÖ÷½çÃæµÄÍ¼±íÉèÖÃ±íÍ·
+        newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î",L"×î´óÄâºÏ½×Êı" });
+        newList2 = DataManager::Instance()->GetPolyfitData();
         for (const auto& innerVector : newList2)
         {
             newList.push_back(innerVector);
@@ -139,7 +204,7 @@ void UIManager::AddTable(WindowsKind index, TableWidget* _table)
 }
 
 
-//äº‹ä»¶å¤„ç†ï¼Œå‘æ¯ä¸€ä¸ªæœ‰å¯¹åº”äº‹ä»¶çš„æˆå‘˜è¿›è¡Œå¹¿æ’­ï¼Œå¹¶ç”±å…¶å•ç‹¬å¤„ç†äº‹ä»¶
+//ÊÂ¼ş´¦Àí£¬ÏòÃ¿Ò»¸öÓĞ¶ÔÓ¦ÊÂ¼şµÄ³ÉÔ±½øĞĞ¹ã²¥£¬²¢ÓÉÆäµ¥¶À´¦ÀíÊÂ¼ş
 void UIManager::MouseClick(int mouseX, int mouseY)
 {
     for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
@@ -189,7 +254,7 @@ void UIManager::MouseWheel(int mouseX, int mouseY, int wheel)
 
 void UIManager::KeyInput(wchar_t ch)
 {
-    //åˆ¤æ–­è¾“å…¥å­—ç¬¦æ˜¯å¦æ˜¯è‹±æ–‡å­—æ¯æˆ–æ•°å­—æˆ–æ“ä½œç¬¦ï¼Œè‹¥ä¸æ˜¯ï¼Œåˆ™å¼¹å‡ºé”™è¯¯æç¤ºæ¡†
+    //ÅĞ¶ÏÊäÈë×Ö·ûÊÇ·ñÊÇÓ¢ÎÄ×ÖÄ¸»òÊı×Ö»ò²Ù×÷·û£¬Èô²»ÊÇ£¬Ôòµ¯³ö´íÎóÌáÊ¾¿ò
     if (iswalpha(ch) || iswdigit(ch)|| ch == L'\n' || ch == L'\b' || ch == '\r')
     {
         for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
@@ -202,13 +267,13 @@ void UIManager::KeyInput(wchar_t ch)
     }
     else
     {
-        MessageBox(GetHWnd(), "Input Error!","error",MB_OK);
+        MessageBox(GetHWnd(), L"ÊäÈë¸ñÊ½´íÎó!",L"ERROR",MB_OK);
     }
 }
 void UIManager::DeleteSelectedData(WindowsKind kind)
 {
     int nowData = -1;
-    //å¾—åˆ°é€‰ä¸­æ•°æ®
+    //µÃµ½Ñ¡ÖĞÊı¾İ
     for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
         if (iter->kind == kind)
@@ -216,7 +281,7 @@ void UIManager::DeleteSelectedData(WindowsKind kind)
             nowData = iter->table->GetSelectedRow();
         }
     }
-    //è‹¥æˆåŠŸåˆ é™¤æ•°æ®ï¼Œåˆ™é‡ç½®å›¾è¡¨
+    //Èô³É¹¦É¾³ıÊı¾İ£¬ÔòÖØÖÃÍ¼±í
     if (DataManager::Instance()->DeleteData(nowData))
     {
         for (auto iter = tables.begin(); iter != tables.end(); iter++)
@@ -225,7 +290,7 @@ void UIManager::DeleteSelectedData(WindowsKind kind)
             {
                 vector<vector<wstring>> newList;
                 vector<vector<wstring>> newList2;
-                newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
+                newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
                 newList2 = DataManager::Instance()->GetInitialData();
                 for (const auto& innerVector : newList2)
                 {
@@ -238,20 +303,46 @@ void UIManager::DeleteSelectedData(WindowsKind kind)
     }
     else
     {
-        MessageBox(GetHWnd(), "Failed!", "DELETE", MB_OK);
+        MessageBox(GetHWnd(), L"É¾³ıÊ§°Ü!", L"DELETE", MB_OK);
     }
 }
+void UIManager::ProcessSelectedData(WindowsKind kind,int maxorder)
+{   
+    maxOrder = maxorder;
+    if (nowProcessData == -1)
+    {
+        //µÃµ½Ñ¡ÖĞÊı¾İ
+        for (auto iter = tables.begin(); iter != tables.end(); iter++)
+        {
+            if (iter->kind == kind)
+            {
+                nowProcessData = iter->table->GetSelectedRow();
+                if (nowProcessData == -1)
+                {
+                    MessageBox(GetHWnd(), L"ÇëÑ¡ÔñÊı¾İ!", L"ERROR", MB_OK);
+                }
+            }
+        }
+    }
+    DataManager::Instance()->ProcessData(nowProcessData, maxOrder);
+
+}
+void UIManager::SetNowProcessData()
+{
+    nowProcessData = -1;
+}
+
 void UIManager::Init()
 {
     instance = new UIManager();
 }
 
-//
 void UIManager::Run()
 {
-    //easyXé¼ æ ‡äº‹ä»¶
+
+    //easyXÊó±êÊÂ¼ş
     ExMessage msg;
-    if (peekmessage(&msg))
+    if (peekmessage(&msg)&& NowWindow!= loadWindow)
     {
         switch (msg.message)
         {
@@ -270,7 +361,7 @@ void UIManager::Run()
         }
     }
 
-         //æ ¹æ®å½“å‰ç•Œé¢åˆ¤æ–­è¿è¡Œå“ªä¸€å¤„çš„UIæ§ä»¶äº‹ä»¶
+         //¸ù¾İµ±Ç°½çÃæÅĞ¶ÏÔËĞĞÄÄÒ»´¦µÄUI¿Ø¼şÊÂ¼ş
         switch (NowWindow)
         {
         case loadWindow:
@@ -283,7 +374,6 @@ void UIManager::Run()
             }
             break;
         case loginWindow:
-            cleardevice();
             for (auto iter = labels.begin(); iter != labels.end(); iter++)
             {
                 if (iter->kind == loginWindow)
@@ -311,25 +401,6 @@ void UIManager::Run()
             }
             break;
         case mainWindow:
-            cleardevice();
-            for (auto iter = labels.begin(); iter != labels.end(); iter++)
-            {
-                if (iter->kind == mainWindow)
-                {
-                    iter->label->Draw();
-                }
-            }
-            for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
-            {
-                if (iter->kind == mainWindow)
-                {
-                    if (iter->textBox->GetSelect())
-                    {
-                        iter->textBox->UpdateCursor();
-                    }
-                    iter->textBox->Draw();
-                }
-            }
             for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
             {
                 if (iter->kind == mainWindow)
@@ -346,32 +417,36 @@ void UIManager::Run()
             }
             break;  
         case processWindow:
-                cleardevice();
-                for (auto iter = labels.begin(); iter != labels.end(); iter++)
+             clearrectangle(50, 400, 440, 800);
+             ShowFileInfo();
+             for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+             {
+                if (iter->kind == processWindow)
                 {
-                    if (iter->kind == mainWindow)
-                    {
-                        iter->label->Draw();
-                    }
-                }
-                for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
-                {
-                    if (iter->kind == mainWindow)
-                    {
-                        iter->button->Draw();
-                    }
-                }
-                for (auto iter = tables.begin(); iter != tables.end(); iter++)
-                {
-                    if (iter->kind == mainWindow)
-                    {
-                        iter->table->Draw();
-                    }
-                }
-                break;
+                   iter->button->Draw();
+                 }
+             }
+             break;
         case showProcessWindow:
+            for (auto iter = tables.begin(); iter != tables.end(); iter++)
+            {
+                if (iter->kind == showProcessWindow)
+                {
+                    iter->table->Draw();
+                }
+            }
+            for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+            {
+                if (iter->kind == showProcessWindow)
+                {
+                    iter->button->Draw();
+                }
+            }
                 break;
         default:
             break;
     }
+
 }
+
+

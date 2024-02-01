@@ -25,6 +25,8 @@ private:
     //此输入框在界面中的索引
     int index;
 
+
+
 public:
     //初始化
     TextBox(int x, int y, int width, int height, int maxWord,int _index)

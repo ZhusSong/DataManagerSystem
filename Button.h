@@ -24,7 +24,8 @@ private:
     //显示的文字
     wstring text;
     //点击事件
-    function<void()> onClick;
+    function<void()> onClick; 
+    
 
 public:
     //初始化，同时赋予参数初值

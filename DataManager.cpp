@@ -6,6 +6,7 @@ DataManager* DataManager::instance = nullptr;
 DataManager::DataManager()
 {
 	FileCount = InitData();
+	InitPolyData();
 }
 
 //内存释放 
@@ -46,7 +47,7 @@ wstring DataManager::CreateRandomData(int count)
 		if (idx != string::npos)
 		{
 			newCount++;
-			i = 0;
+			i = -1;
 		}
 
 	}
@@ -55,25 +56,34 @@ wstring DataManager::CreateRandomData(int count)
 	//创建数据，为-100~100的随机双浮点数，保留10位小数
 	vector<double> newDatas;
 	srand(static_cast<unsigned int>(time(NULL)));
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < count*2; i++)
 	{
 		double random_double = -100 + static_cast<double>(rand()) / (RAND_MAX / 200.0);
-	//	random_double = trunc(random_double * 1e10) / 1e10;
 		newDatas.push_back(random_double);
 	}
 	double m=mean(newDatas);
 	double v=variance(newDatas);
-	//将新创建的数据存入Datas
-	Datas.push_back({s,count,newDatas,m,v});
+	//对X坐标进行排序
+	newDatas = SortByX(newDatas);
 
-	//在文件夹中创建文件,保留8位有效数字
+	//在文件夹中创建文件
 	wstring folders = L"./InitialDatas/"+s+L".txt";
 	ofstream file(folders);
 	for(int i=0;i<newDatas.size();i++)
 	{
-		file << std::setprecision(8)<< newDatas[i]<<std::endl;
+		file  << newDatas[i]<<endl;
+		/*if (i % 2 == 0)
+		{
+			file << std::setprecision(8) << newDatas[i];
+		}
+		else
+		{
+			file << std::setprecision(8) << newDatas[i];
+		}*/
 	}
-
+	s += L".txt";
+	//将新创建的数据存入Datas
+	Datas.push_back({ s,count ,newDatas,m,v });
 	return s;
 }
 
@@ -85,7 +95,54 @@ int DataManager::GetDataCount()
 
 bool DataManager::InitPolyData()
 {
-	return false;
+	int fileCount = 0;
+	const string FolderPath = "./ProcessDatas";
+	int row;
+	//噪声均值
+	double Nmean;
+	//噪声方差
+	double Nvar;
+	//获取文件
+	wstring s;
+
+	PolyfitInfo info;
+	for (const auto& entry : filesystem::directory_iterator(FolderPath))
+	{
+		if (entry.is_regular_file() && entry.path().extension() == ".dat")
+		{
+			wifstream infile(entry.path().string());
+			if (!infile.is_open()) {
+				return false; // Return an empty struct if file cannot be opened
+			}
+			std::wstring line;
+			int lineCount = 0;
+			while (getline(infile, line) && lineCount < 5) {
+				switch (lineCount) {
+				case 0:
+					info.filename = line;
+					break;
+				case 1:
+					info.row = std::stoi(line);
+					break;
+				case 2:
+					info.MaxOrder = std::stoi(line);
+					break;
+				case 3:
+					info.Nmean = std::stod(line);
+					break;
+				case 4:
+					info.Nvar = std::stod(line);
+					break;
+				}
+				lineCount++;
+			}
+
+			PolyDatas.push_back(info);
+			infile.close();
+		}
+		fileCount += 1;
+	}
+	return true;
 }
 
 int DataManager::InitData()
@@ -118,13 +175,15 @@ int DataManager::InitData()
 			}
 			else 
 			{
-				std::cerr << "Error opening file: " << entry.path() << std::endl;
+				std::cerr << "未能打开文件: " << entry.path() << std::endl;
 			}
-			row = numericalData.size();
+			row = numericalData.size()/2;
+
 			//获取均值
 			Nmean = mean(numericalData);
 			//获取方差
 			Nvar = variance(numericalData);
+			numericalData = SortByX(numericalData);
 			//存入数据信息
 			Datas.push_back({ s,row,numericalData,Nmean,Nvar});
 			//清空缓存
@@ -133,7 +192,31 @@ int DataManager::InitData()
 		}
 		fileCount+=1;
 	}
+
 	return fileCount;
+}
+
+vector<double> DataManager::SortByX(vector<double> datas)
+{
+	vector<double> Xcoord;
+	int j = 0;
+	for (int i = 0; i < datas.size(); i++)
+	{
+		if (i % 2 == 0)
+		{
+			Xcoord.push_back(datas[i]);
+			j++;
+		}
+	}
+	sort(Xcoord.begin(), Xcoord.end());
+	j = -2;
+	for (int i = 0; i < Xcoord.size(); i++)
+	{
+		j += 2;
+		datas[j] = Xcoord[i];
+	}
+
+	return datas;
 }
 
 bool DataManager::FindAccount(char* name)
@@ -163,12 +246,28 @@ bool DataManager::CheckPassWord(char* name, char* password)
 	return false;
 }
 
+const vector<vector<wstring>> DataManager::GetPolyfitData()
+{
+	wstring name, row, mean, variance,maxOrder;
+	vector<vector<wstring>> newList;
+	for (auto iter = PolyDatas.begin(); iter != PolyDatas.end(); iter++)
+	{
+		name = iter->filename;
+		row = to_wstring(iter->row);
+		mean = to_wstring(iter->Nmean);
+		variance = to_wstring(iter->Nvar);
+		maxOrder = to_wstring(iter->MaxOrder);
+		newList.push_back({ name,row,mean,variance,maxOrder});
+	}
+	return newList;
+}
+
 bool DataManager::LoadAccount()
 {
 	ifstream infile("./Accounts/account.dat", ios::binary);
 	if (!infile.is_open()) 
 	{
-		MessageBox(GetHWnd(), "无法打开文件！", "error", MB_OK);
+		MessageBox(GetHWnd(), L"无法打开文件！", L"错误", MB_OK);
 		return false;
 	}
 	else
@@ -208,7 +307,7 @@ bool DataManager::CreateAccount(char* name, char* password)
 			outfile.write(reinterpret_cast<const char*>(AccountDatas.data()), AccountDatas.size() * sizeof(Account));
 			if (outfile.fail())
 			{
-				std::cerr << "Error!" << std::endl;
+				std::cerr << "错误!" << std::endl;
 				outfile.close();
 				return false;
 			}
@@ -223,9 +322,62 @@ bool DataManager::CreateAccount(char* name, char* password)
 }
 
 
-bool DataManager::AddData(string& name, vector<double>& data)
+bool DataManager::SaveProcessData()
 {
-	return false;
+	//为新文件命名，命名格式为newData_N,后缀N为当前以此方法创建的文件的总数
+	wstring path = L"./ProcessDatas/";
+	wstring s = L"ProcessData_";
+	//后缀N
+	int newCount = 0;
+	//为新文件的后缀做判断，若已存在拥有此后缀的文件，则后缀N加1
+	string::size_type idx;
+	vector<wstring> names;
+	for (auto iter = PolyDatas.begin(); iter != PolyDatas.end(); iter++)
+	{
+		idx = iter->filename.find(s);
+		if (idx != string::npos)
+		{
+			names.push_back(iter->filename);
+		}
+	}
+	for (int i = 0; i < names.size(); i++)
+	{
+		idx = names[i].find(to_wstring(newCount));
+		if (idx != string::npos)
+		{
+			newCount++;
+			i = 0;
+		}
+
+	}
+	s += to_wstring(newCount);
+	s += L".dat";
+
+	wofstream outfile(path+s, ios::binary);
+	if (!outfile.is_open())
+	{
+		return false;
+	}
+	else
+	{
+		//写入数据
+		outfile << s << endl;
+		outfile << thisData.row << endl;
+		outfile << thisData.MaxOrder << endl;
+		outfile << thisData.Nmean << endl;
+		outfile << thisData.Nvar << endl;
+		if (outfile.fail())
+		{
+			std::cerr << "错误!" << std::endl;
+			outfile.close();
+			return false;
+		}
+	}
+	outfile.close();
+
+
+
+	return true;
 }
 
 bool DataManager::DeleteData(int index)
@@ -251,9 +403,80 @@ bool DataManager::DeleteData(int index)
 	}
 	else
 	{
-		MessageBox(GetHWnd(), "Successfully!", "DELETE", MB_OK);
+		MessageBox(GetHWnd(), L"成功!", L"DELETE", MB_OK);
 		return true;
 	}
+}
+
+DataManager::InitialData DataManager::GetSelectedData(int index)
+{
+	InitialData thisData;
+	thisData = Datas[index - 1];
+	return thisData;
+}
+
+void DataManager::ProcessData(int index, int maxorder)
+{
+	cleardevice();
+	int i, datacount= 0;
+	int x=0, y = 0;
+	double datax[N], datay[N], fity[N];
+	double polyCoeff[10][10];
+	double polyError[10];
+	double fiterror;		// 拟合误差
+	int order; // 多项式的阶次
+	datacount = Datas[index - 1].row;
+
+	setfillcolor(BLACK);
+	fillrectangle(0, 0, 1024, 400);
+	setfillcolor(BLACK);
+	fillrectangle(450, 400, 1080, 768);
+
+	for (int j=0; j<Datas[index-1].row*2; j++)
+	{
+		if (j%2==0)
+		{
+			datax[x] = Datas[index - 1].data[j];
+			x++;
+		}
+		else
+		{
+			datay[y] = Datas[index - 1].data[j];
+			y++;
+		}
+	}
+	showdata(datax, datay, datacount, RED, dataarea);
+	// 利用最小二乘确定多项式拟合的系数
+	for (order = 1; order <= maxorder; order++)
+	{
+		polyfit(datacount, datax, datay, order, polyCoeff[order]);
+	}
+	// 利用最小二乘确定多项式拟合的系数
+	for (order = 1; order <= maxorder; order++)
+	{
+		polyfit(datacount, datax, datay, order, polyCoeff[order]);
+	}
+	// 计算并记录拟合误差，画出拟合曲线。
+	for (order = 1; order <= maxorder; order++)
+	{
+		fiterror = 0;
+		for (i = 0; i < datacount; i++)
+		{
+			fity[i] = fx(datax[i], polyCoeff[order], order);
+			fiterror += (fity[i] - datay[i]) * (fity[i] - datay[i]);
+		}
+		polyError[order] = fiterror;
+		showdata(datax, fity, datacount, Colour[order], dataarea);
+	}
+	// 用直方图表示不同阶次的拟合误差。
+	showhisto(polyError, maxorder, parea); // 在parea 显示直方图
+
+	thisData = { Datas[index - 1].filename,Datas[index - 1].row,maxorder,Datas[index - 1] .Nmean,Datas[index - 1] .Nvar};
+	wstring ws = L"ProcessData_";
+	ws +=to_wstring(PolyDatas.size());
+	ws += L".dat";
+	thisData.filename = ws;
+	PolyDatas.push_back(thisData);
 }
 
 
@@ -261,7 +484,6 @@ bool DataManager::DeleteData(int index)
 
 const vector<vector<wstring>> DataManager::GetInitialData()
 {
-	
 	wstring name,row,mean,variance;
 	vector<vector<wstring>> newList;
 	for (auto iter = Datas.begin(); iter != Datas.end(); iter++)
@@ -273,6 +495,63 @@ const vector<vector<wstring>> DataManager::GetInitialData()
 		newList.push_back({ name,row,mean,variance });
 	}
 	return newList;
+}
+
+void DataManager::SortDatas(WindowsKind dkind, SortKind skind)
+{
+	if (dkind == mainWindow)
+	{
+		switch (skind)
+		{
+		case ByMean:
+			sort(Datas.begin(), Datas.end(), [](const InitialData &a, const InitialData &b)
+				{
+					return a.Nmean < b.Nmean;
+				});
+			break;
+		case ByVar:
+			sort(Datas.begin(), Datas.end(), [](const InitialData& a, const InitialData& b)
+				{
+					return a.Nvar < b.Nvar;
+				});
+			break;
+		case ByRow:
+			sort(Datas.begin(), Datas.end(), [](const InitialData& a, const InitialData& b)
+				{
+					return a.row< b.row;
+				});
+			break;
+		default:
+			break;
+
+		}
+	}
+	else if (dkind ==showProcessWindow)
+	{
+		switch (skind)
+		{
+		case ByMean:
+			sort(PolyDatas.begin(), PolyDatas.end(), [](const PolyfitInfo& a, const PolyfitInfo& b)
+				{
+					return a.Nmean < b.Nmean;
+				});
+			break;
+		case ByVar:
+			sort(PolyDatas.begin(), PolyDatas.end(), [](const PolyfitInfo& a, const PolyfitInfo& b)
+				{
+					return a.Nvar < b.Nvar;
+				});
+			break;
+		case ByRow:
+			sort(PolyDatas.begin(), PolyDatas.end(), [](const PolyfitInfo& a, const PolyfitInfo& b)
+				{
+					return a.row < b.row;
+				});
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void DataManager::SortDataByRow()
@@ -394,7 +673,6 @@ void DataManager::polyfit(int n, double x[], double y[], int poly_n, double p[])
 	gauss_solve(poly_n + 1, ata, p, sumxy);
 	reverseP(p, poly_n);
 
-	//ﾊﾍｷﾅｶｯﾌｬｷﾖﾅ莊ﾄﾄﾚｴ譯｣	
 	free(tempx);
 	free(sumxx);
 	free(tempy);
@@ -467,38 +745,6 @@ double DataManager::fx(double x, double coeffs[], int degree)
 	}
 	return result;
 }
-
-void DataManager::showhisto(double result[], int n, PlotArea area)
-{
-	int i;
-	double max;
-	float xscale, yscale;
-	max = result[1];
-	for (i = 1; i < n; i++)
-		if (max < result[i]) max = result[i];
-	xscale = (area.x1 - area.x0) / (float)n;
-	yscale = (area.y1 - area.y0) / (float)max;
-	for (i = 1; i <= n; i++)
-	{
-		setfillcolor(COLOR[i + 1]);
-		solidrectangle(area.x0 + i * xscale, area.y1, area.x0 + (i + 1) * xscale, area.y1 - result[i] * yscale);
-	}
-}
-
-void DataManager::showpinfo(PolyfitInfo pinfo, PlotArea farea)
-{
-	// need to set the project properties to MBCS	
-	char s[50];
-	//printf_s(s, "Filename: %s", _strupr_s(pinfo.filename));
-	outtextxy(farea.x0, farea.y0, s);
-	printf_s(s, "Row of Data %d", pinfo.row);
-	outtextxy(farea.x0, farea.y0 + 30, s);
-	printf_s(s, "OptiOrder is %d", pinfo.OptiOrder);
-	outtextxy(farea.x0, farea.y0 + 60, s);
-	printf_s(s, "Overall fiterrror is %.2lf", pinfo.fitError[pinfo.OptiOrder]);
-	outtextxy(farea.x0, farea.y0 + 90, s);
-}
-
 void DataManager::showdata(double dataX[], double dataY[], int n, long color, PlotArea p)
 {
 	int i;
@@ -523,6 +769,25 @@ void DataManager::showdata(double dataX[], double dataY[], int n, long color, Pl
 	setlinestyle(PS_SOLID | PS_JOIN_BEVEL, 2);
 	for (i = 0; i < n - 1; i++)
 	{
+		double a=dataX[i];
+		double b = dataY[i];
 		line(x0 + (dataX[i] - minX) / scaleX * width, y1 - (dataY[i] - minY) / scaleY * height, x0 + (dataX[i + 1] - minX) / scaleX * width, y1 - (dataY[i + 1] - minY) / scaleY * height);
+	}
+}
+
+void DataManager::showhisto(double result[], int n, PlotArea area)
+{
+	int i;
+	double max;
+	float xscale, yscale;
+	max = result[1];
+	for (i = 1; i < n; i++)
+		if (max < result[i]) max = result[i];
+	xscale = (area.x1 - area.x0) / (float)n;
+	yscale = (area.y1 - area.y0) / (float)max;
+	for (i = 1; i <= n; i++)
+	{
+		setfillcolor(Colour[i + 1]);
+		solidrectangle(area.x0 + i * xscale, area.y1, area.x0 + (i + 1) * xscale, area.y1 - result[i] * yscale);
 	}
 }

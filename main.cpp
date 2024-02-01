@@ -24,7 +24,6 @@ int  main()
 	WindowsManager::Instance()->Init();
 
 	//开始运行
-	UIManager::Instance()->Run();
 	WindowsManager::Instance()->Run();
 	return 0;
 }

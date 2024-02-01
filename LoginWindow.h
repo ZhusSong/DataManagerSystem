@@ -25,5 +25,4 @@ public:
 	~LoginWindow();
 	
 	void Init();
-	void Run();
 };

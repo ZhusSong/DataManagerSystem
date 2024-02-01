@@ -41,38 +41,41 @@ void Button::Draw()
     if (isMouseOver)
     {
         setlinecolor(BLUE);
-        setfillcolor(RGB(rgb[COLORS::EnterColor_1].r, rgb[COLORS::EnterColor_1].g, rgb[COLORS::EnterColor_1].b));
+        setfillcolor(RGB(rgb[COLORS::EnterColor_3].r, rgb[COLORS::EnterColor_3].g, rgb[COLORS::EnterColor_3].b));
     }
     else if(isMouseClick)
     {
         setlinecolor(YELLOW);
-        setfillcolor(RGB(rgb[COLORS::ClickColor_1].r, rgb[COLORS::ClickColor_1].g, rgb[COLORS::ClickColor_1].b));
+        setfillcolor(RGB(rgb[COLORS::ClickColor_3].r, rgb[COLORS::ClickColor_3].g, rgb[COLORS::ClickColor_3].b));
 
     }
     else 
     {
         setlinecolor(BLACK);
-        setfillcolor(RGB(rgb[COLORS::NormalColor_1].r, rgb[COLORS::NormalColor_1].g, rgb[COLORS::NormalColor_1].b));
+        setfillcolor(RGB(rgb[COLORS::NormalColor_3].r, rgb[COLORS::NormalColor_3].g, rgb[COLORS::NormalColor_3].b));
 
     }
 
     //将参数中的wstring类型转换为const char*类型，以便easyX的函数使用
-    const char* _text = nullptr;
-    size_t bufferSize = 0;
-    wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
-    std::vector<char> buffer(bufferSize + 1);
-    if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
-    {
-        _text = buffer.data();
-    }
+    char* _text = SystemUtiliy::ChangeStringToChar(text);
+    //char* _text = SystemUtiliy::ChangeStringToChar(text);
+    //size_t bufferSize = 0;
+    //wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+    //std::vector<char> buffer(bufferSize + 1);
+    //if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+    //{
+    //    _text = buffer.data();
+    //}
 
     //绘制按钮
     fillroundrect(scaledX, scaledY, scaledX + scaledWidth, scaledY + scaledHeight,50,50);
     settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);
-    settextstyle(30 * scale, 0, _T("Arial"));
-    int textX = scaledX + (scaledWidth - textwidth(_text)) / 2;
-    int textY = scaledY + (scaledHeight - textheight(_T("Arial"))) / 2;
-    outtextxy(textX, textY, _text);
+    settextstyle(30 * scale, 0, _T("宋体"));
+    int textX = scaledX + (scaledWidth - textwidth(text.c_str())) / 2;
+    int textY = scaledY + (scaledHeight - textheight(_T("宋体"))) / 2;
+    outtextxy(textX, textY, text.c_str());
+
+    delete  _text;
 }
 

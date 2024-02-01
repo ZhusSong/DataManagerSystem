@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <graphics.h>
 #include <easyx.h>
 #include <string>
@@ -13,7 +13,6 @@ private:
     int height;
     std::wstring text;
 
-    const char* _text = nullptr;
 public:
     Label(int x, int y, int width, int height, const std::wstring& text)
         : x(x), y(y), width(width), height(height), text(text) {

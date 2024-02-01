@@ -1,4 +1,4 @@
-ï»¿#include "Label.h"
+#include "Label.h"
 
 void Label::SetText(const std::wstring& newText)
 {
@@ -10,20 +10,22 @@ void Label::Draw()
 {
     settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
     setbkmode(TRANSPARENT);
+    char* _text = SystemUtiliy::ChangeStringToChar(text);
 
-    //å°†å‚æ•°ä¸­çš„wstringç±»å‹è½¬æ¢ä¸ºconst char*ç±»å‹ï¼Œä»¥ä¾¿easyXçš„å‡½æ•°ä½¿ç”¨
-     char* _text=nullptr;
-  //   _text= ChangeStringToChar(text);
-    size_t bufferSize = 0;
-    wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
-    std::vector<char> buffer(bufferSize + 1);
-    if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
-    {
-        _text = buffer.data();
-    }
+    //½«²ÎÊıÖĞµÄwstringÀàĞÍ×ª»»Îªconst char*ÀàĞÍ£¬ÒÔ±ãeasyXµÄº¯ÊıÊ¹ÓÃ
+  //   char* _text=nullptr;
+  ////   _text= ChangeStringToChar(text);
+  //  size_t bufferSize = 0;
+  //  wcstombs_s(&bufferSize, nullptr, 0, text.c_str(), 0);
+  //  std::vector<char> buffer(bufferSize + 1);
+  //  if (wcstombs_s(&bufferSize, buffer.data(), bufferSize + 1, text.c_str(), bufferSize) == 0)
+  //  {
+  //      _text = buffer.data();
+  //  }
 
-    settextstyle(height * 0.8, 0, _T("Arial"));
-    int textX = x + (width - textwidth(_text)) / 2;
-    int textY = y + (height - textheight(_T("Arial"))) / 2;
-    outtextxy(textX, textY, _text);
+    settextstyle(height * 0.8, 0, _T("ËÎÌå"));
+    int textX = x + (width - textwidth(text.c_str())) / 2;
+    int textY = y + (height - textheight(_T("ËÎÌå"))) / 2;
+    outtextxy(textX, textY, text.c_str());
+    delete  _text;
 }
