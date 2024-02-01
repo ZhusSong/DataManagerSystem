@@ -43,13 +43,13 @@ public:
     }
 
     //返回此输入框是否被选中
-    bool GetSelect() const
+    bool GetSelect()
     {
         return isSelected;
     }
 
     //返回此输入框是否为空
-    bool IsEmpty() const
+    bool IsEmpty()
     {
         return text.empty();
     }

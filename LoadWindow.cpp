@@ -1,6 +1,6 @@
-#include "LoadWindow.h"
+ï»¿#include "LoadWindow.h"
 #include "WindowsManager.h"
-//Ö¸Õë³õÊ¼»¯
+//æŒ‡é’ˆåˆå§‹åŒ–
 LoadWindow* LoadWindow::instance = nullptr;
 LoadWindow::LoadWindow()
 {
@@ -8,15 +8,16 @@ LoadWindow::LoadWindow()
 
 LoadWindow::~LoadWindow()
 {
+	UnInit();
 }
 
 void LoadWindow::DrawProgressBar()
 {
-	//Íâ²¿½ø¶ÈÌõ³¤¶ÈÓë¿í¶È
+	//å¤–éƒ¨è¿›åº¦æ¡é•¿åº¦ä¸Žå®½åº¦
 	int barWidth = 800;
 	int barHeight = 150;
 
-	//ÄÚ²¿½ø¶ÈÌõÎ»ÖÃ
+	//å†…éƒ¨è¿›åº¦æ¡ä½ç½®
 	int barX = (getmaxx() - barWidth) / 2;
 	int barY = (getmaxy() - barHeight) / 2;
 
@@ -34,9 +35,9 @@ void LoadWindow::DrawProgressBar()
 	solidroundrect(barX, barY , barX  + filledWidth, barY + barHeight ,100,100);
 
 	settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-	settextstyle(40, 0, _T("ËÎÌå"));
+	settextstyle(40, 0, _T("Arial"));
 	TCHAR progressText[20];
-	_stprintf_s(progressText, _T("¼ÓÔØÖÐ: %d%%"), Progress);
+	_stprintf_s(progressText, _T("Loading: %d%%"), Progress);
 	
 	outtextxy(barX + barWidth / 2 - textwidth(progressText) / 2, barY + barHeight / 2 - textheight(progressText) / 2 + barHeight+20, progressText);
 
@@ -52,8 +53,8 @@ void LoadWindow::Init()
 	instance = new LoadWindow();
 	instance ->DataCount = DataManager::Instance()->GetDataCount();
 
-	UIManager::Instance()->CreateLabel(WindowsKind::loadWindow,
-		300, 100, 400, 80, L"Êý¾Ý´¦ÀíÏµÍ³");
+	UIManager::Instance()->CreateLabel(10,
+		300, 100, 400, 80, L"Data System");
 }
 
 void LoadWindow::UnInit()
@@ -65,18 +66,17 @@ void LoadWindow::Run()
 {
 	if (Progress == 100)
 	{
-		Sleep(300);
+		Sleep(400);
 		NowWindow = loginWindow;
-		UnInit();
-		return;
+		cleardevice();
 	}
 		DrawProgressBar();
 		Progress += 100/ DataCount;
+		Sleep(400); 
 		if (Progress >= 100)
 		{
 			Progress = 100;
 		}
-		Sleep(200);
-
+		
 		
 }

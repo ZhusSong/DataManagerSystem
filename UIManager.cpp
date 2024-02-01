@@ -1,7 +1,7 @@
-#include "UIManager.h"
+ï»¿#include "UIManager.h"
 
 
-//Ö¸Õë³õÊ¼»¯
+//æŒ‡é’ˆåˆå§‹åŒ–
 UIManager* UIManager::instance = nullptr;
 
 UIManager::UIManager()
@@ -11,84 +11,31 @@ UIManager::UIManager()
 
 UIManager::~UIManager()
 {
-    delete instance;
 }
 
-void UIManager::ShowFileInfo()
-{
-    settextstyle(30, 0, _T("ËÎÌå"));   
-    int textX = 50;
-    int textY = 590;
-    settextcolor(RGB(rgb[COLORS::TextColor].r, rgb[COLORS::TextColor].g, rgb[COLORS::TextColor].b));
-    wstring text = L"FileName: ";
-    text +=DataManager::Instance()->GetSelectedData(nowProcessData).filename;
-
-    wstring text2 = L"Mean is: ";
-    text2 += to_wstring(DataManager::Instance()->GetSelectedData(nowProcessData).Nmean);
-
-    wstring text3 = L"Variance is: ";
-    text3 += to_wstring(DataManager::Instance()->GetSelectedData(nowProcessData).Nvar);
-
-
-
-    char* _text = SystemUtiliy::ChangeStringToChar(text);
-    char* _text2 = SystemUtiliy::ChangeStringToChar(text2);
-    char* _text3 = SystemUtiliy::ChangeStringToChar(text3);
-
-    outtextxy(textX, textY, text.c_str());
-     textX = 50;
-     textY = 630;
-    outtextxy(textX, textY, text2.c_str());
-     textX = 50;
-     textY = 670;
-    outtextxy(textX, textY, text3.c_str());
-
-    delete(_text);
-    delete(_text2);
-    delete(_text3);
-}
 void UIManager::SetNewTable(WindowsKind kind)
 {
-    //Á½¸öÁĞ±í£¬Ò»¸öÓÃÓÚ³õÊ¼»¯±íÍ·²¢½áºÏ³É×ÜÊı¾İ£¬Ò»¸öÓÃÓÚ½ÓÊÕ×ÔDataManager»ñÈ¡µÄÊı¾İ
-    vector<vector<wstring>> newList;
-    vector<vector<wstring>> newList2;
     for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
-        if (iter->kind == mainWindow)
+        if (iter->first == kind)
         {
-            //ÎªÍ¼±íÌí¼Ó±íÍ·
-            newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
+            //ä¸¤ä¸ªåˆ—è¡¨ï¼Œä¸€ä¸ªç”¨äºåˆå§‹åŒ–è¡¨å¤´å¹¶ç»“åˆæˆæ€»æ•°æ®ï¼Œä¸€ä¸ªç”¨äºæ¥æ”¶è‡ªDataManagerè·å–çš„æ•°æ®
+            vector<vector<wstring>> newList;
+            vector<vector<wstring>> newList2;
+            //ä¸ºå›¾è¡¨æ·»åŠ è¡¨å¤´
+            newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
             
             newList2 = DataManager::Instance()->GetInitialData();
             for (const auto& innerVector : newList2)
             {
                 newList.push_back(innerVector);
             }
-            iter->table->SetData(newList);
-            //ÖØÖÃÍ¼±í
-            iter->table->ResetTable();
-            newList.clear();
-            newList2.clear();
-        }
-        if (iter->kind == showProcessWindow)
-        {
-            //ÎªÍ¼±íÌí¼Ó±íÍ·
-            newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î",L"×î´óÄâºÏ½×Êı" });
-            newList2 = DataManager::Instance()->GetPolyfitData();
-            for (const auto& innerVector : newList2)
-            {
-                newList.push_back(innerVector);
-            }
-            iter->table->SetData(newList);
-            iter->table->ResetTable();
-
-            newList.clear();
-            newList2.clear();
-
+            iter->second->SetData(newList);
+            //é‡ç½®å›¾è¡¨
+            iter->second->ResetTable();
         }
     }
 }
-
 
 UIManager* UIManager::Instance()
 {
@@ -100,13 +47,13 @@ void UIManager::CreatePage()
 
 }
 
-void UIManager::CreateButton(WindowsKind index, int x, int y, int width, int height, const wstring& text, const function<void()>& onClick,int number)
+void UIManager::CreateButton(int index, int x, int y, int width, int height, const wstring& text, const function<void()>& onClick,int number)
 {
     Button* button = new Button(x, y, width, height, text,onClick,number);
     AddButton(index, button);
 }
 
-void UIManager::CreateTextBox(WindowsKind index, int x, int y, int width, int height, int maxWord, int number)
+void UIManager::CreateTextBox(int index, int x, int y, int width, int height, int maxWord, int number)
 {
     TextBox* textBox = new TextBox(x, y, width, height, maxWord, number);
     AddTextBox(index, textBox);
@@ -114,19 +61,21 @@ void UIManager::CreateTextBox(WindowsKind index, int x, int y, int width, int he
 
 void UIManager::ClearTextBox()
 {
-    for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+    textBoxs[0]->Clear();
+    textBoxs[1]->Clear();
+  /*  for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
     {
-        iter->textBox->Clear();
-    }
+        iter->second->Clear();
+    }*/
 }
 
-void UIManager::CreateLabel(WindowsKind index, int x, int y, int width, int height, const std::wstring& text)
+void UIManager::CreateLabel(int index, int x, int y, int width, int height, const std::wstring& text)
 {
     Label* label = new Label(x, y, width, height, text);
     AddLabel(index,label);
 }
 
-void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int height, int visibleRowCount)
+void UIManager::CreateTable(int index, int x, int y, int width, int height, int visibleRowCount)
 {
     TableWidget* table = new TableWidget(x, y, width, height, visibleRowCount);
 
@@ -135,22 +84,10 @@ void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int heig
 
     switch (index)
     {
-    case mainWindow:
-        //ÎªÖ÷½çÃæµÄÍ¼±íÉèÖÃ±íÍ·
-        newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
+    case 0:
+        //ä¸ºä¸»ç•Œé¢çš„å›¾è¡¨è®¾ç½®è¡¨å¤´
+        newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
         newList2 = DataManager::Instance()->GetInitialData();
-        for (const auto& innerVector : newList2)
-        {
-            newList.push_back(innerVector);
-        }
-        table->SetData(newList);
-        newList.clear();
-        newList2.clear();
-        break;
-    case showProcessWindow:
-        //ÎªÖ÷½çÃæµÄÍ¼±íÉèÖÃ±íÍ·
-        newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î",L"×î´óÄâºÏ½×Êı" });
-        newList2 = DataManager::Instance()->GetPolyfitData();
         for (const auto& innerVector : newList2)
         {
             newList.push_back(innerVector);
@@ -163,15 +100,9 @@ void UIManager::CreateTable(WindowsKind index, int x, int y, int width, int heig
     AddTable(index, table);
 }
 
- wstring UIManager::GetTextFromTextBox(int index) const
+ wstring UIManager::GetTextFromTextBox(int index) 
 {
-    for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
-    {
-        if (iter->kind == NowWindow&& iter->textBox->GetInedx()== index)
-        {
-            return iter->textBox->GetText();
-        }
-    }
+     return textBoxs[index]->GetText();
 
 }
 
@@ -181,33 +112,56 @@ void UIManager::AddPage(IMAGE* page)
    
 }
 
-void UIManager::AddButton(WindowsKind index, Button* button)
+void UIManager::AddButton(int index, Button* button)
 {
-        buttons.push_back({ index, button });
+    buttons[index]=button;
 }
 
-void UIManager::AddTextBox(WindowsKind index, TextBox* textBox)
+void UIManager::AddTextBox(int index, TextBox* textBox)
 {
-        textBoxs.push_back({index, textBox });
+    textBoxs[index] = textBox;
 }
 
-void UIManager::AddLabel(WindowsKind index, Label* label)
+void UIManager::AddLabel(int index, Label* label)
 {
 
-    labels.push_back({index, label});
+    labels[index] = label;
     
 }
 
-void UIManager::AddTable(WindowsKind index, TableWidget* _table)
+void UIManager::AddTable(int index, TableWidget* _table)
 {
-    tables.push_back({index,_table});
+    tables[index] = _table;
 }
 
 
-//ÊÂ¼ş´¦Àí£¬ÏòÃ¿Ò»¸öÓĞ¶ÔÓ¦ÊÂ¼şµÄ³ÉÔ±½øĞĞ¹ã²¥£¬²¢ÓÉÆäµ¥¶À´¦ÀíÊÂ¼ş
+//äº‹ä»¶å¤„ç†ï¼Œå‘æ¯ä¸€ä¸ªæœ‰å¯¹åº”äº‹ä»¶çš„æˆå‘˜è¿›è¡Œå¹¿æ’­ï¼Œå¹¶ç”±å…¶å•ç‹¬å¤„ç†äº‹ä»¶
 void UIManager::MouseClick(int mouseX, int mouseY)
 {
-    for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+    switch (NowWindow)
+    {
+    case loginWindow:
+        buttons[0]->CheckClick(mouseX,  mouseY);
+        buttons[1]->CheckClick(mouseX, mouseY);
+        buttons[2]->CheckClick(mouseX, mouseY);
+
+        textBoxs[0]->CheckClick(mouseX, mouseY);
+        textBoxs[1]->CheckClick(mouseX, mouseY);
+        break;
+    case mainWindow:
+        buttons[3]->CheckClick(mouseX, mouseY);
+        buttons[4]->CheckClick(mouseX, mouseY);
+        buttons[5]->CheckClick(mouseX, mouseY);
+        buttons[6]->CheckClick(mouseX, mouseY);
+        buttons[7]->CheckClick(mouseX, mouseY);
+        tables[0]->HandleMouseClick(mouseX, mouseY);
+
+        break;
+    case processWindow:
+
+        break;
+    }
+  /*  for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
     {
         if (iter->kind == NowWindow)
         {
@@ -216,10 +170,7 @@ void UIManager::MouseClick(int mouseX, int mouseY)
     }
     for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
     {
-        if (iter->kind == NowWindow)
-        {
-            iter->button->CheckClick(mouseX, mouseY);
-        }
+        iter->second->CheckClick(mouseX, mouseY);
     }
     for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
@@ -227,122 +178,100 @@ void UIManager::MouseClick(int mouseX, int mouseY)
         {
             iter->table->HandleMouseClick(mouseX, mouseY);
         }
-    }
+    }*/
 }
 
 void UIManager::MouseMove(int mouseX, int mouseY)
 {
-    for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+    switch (NowWindow)
+    {
+    case loginWindow:
+        buttons[0]->CheckMouseOver(mouseX, mouseY);
+        buttons[1]->CheckMouseOver(mouseX, mouseY);
+        buttons[2]->CheckMouseOver(mouseX, mouseY);
+        break;
+    case mainWindow:
+        buttons[3]->CheckMouseOver(mouseX, mouseY);
+        buttons[4]->CheckMouseOver(mouseX, mouseY);
+        buttons[5]->CheckMouseOver(mouseX, mouseY);
+        buttons[6]->CheckMouseOver(mouseX, mouseY);
+        buttons[7]->CheckMouseOver(mouseX, mouseY);
+
+        break;
+    case processWindow:
+
+        break;
+    }
+   /* for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
     {
         if (iter->kind == NowWindow)
         {
             iter->button->CheckMouseOver(mouseX,mouseY);
         }
-    }
+    }*/
 }
 
 void UIManager::MouseWheel(int mouseX, int mouseY, int wheel)
 {
-    for (auto iter = tables.begin(); iter != tables.end(); iter++)
+    tables[0]->Scroll(mouseX,mouseY, wheel);
+  /*  for (auto iter = tables.begin(); iter != tables.end(); iter++)
     {
         if (iter->kind == NowWindow)
         {
             iter->table->Scroll(mouseX, mouseY,wheel);
         }
-    }
+    }*/
 }
 
 void UIManager::KeyInput(wchar_t ch)
 {
-    //ÅĞ¶ÏÊäÈë×Ö·ûÊÇ·ñÊÇÓ¢ÎÄ×ÖÄ¸»òÊı×Ö»ò²Ù×÷·û£¬Èô²»ÊÇ£¬Ôòµ¯³ö´íÎóÌáÊ¾¿ò
+    //åˆ¤æ–­è¾“å…¥å­—ç¬¦æ˜¯å¦æ˜¯è‹±æ–‡å­—æ¯æˆ–æ•°å­—æˆ–æ“ä½œç¬¦ï¼Œè‹¥ä¸æ˜¯ï¼Œåˆ™å¼¹å‡ºé”™è¯¯æç¤ºæ¡†
     if (iswalpha(ch) || iswdigit(ch)|| ch == L'\n' || ch == L'\b' || ch == '\r')
     {
-        for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
-        {
-            if (iter->textBox->GetSelect())
-            {
-                iter->textBox->KeyInput(ch);
-            }
-        }
+        if (textBoxs[0]->GetSelect())
+        textBoxs[0]->KeyInput(ch);
+        else if(textBoxs[1]->GetSelect())
+            textBoxs[1]->KeyInput(ch);
     }
     else
     {
-        MessageBox(GetHWnd(), L"ÊäÈë¸ñÊ½´íÎó!",L"ERROR",MB_OK);
+        MessageBox(GetHWnd(), "Input Error!","error",MB_OK);
     }
 }
-void UIManager::DeleteSelectedData(WindowsKind kind)
+void UIManager::DeleteSelectedData(int kind)
 {
     int nowData = -1;
-    //µÃµ½Ñ¡ÖĞÊı¾İ
-    for (auto iter = tables.begin(); iter != tables.end(); iter++)
-    {
-        if (iter->kind == kind)
-        {
-            nowData = iter->table->GetSelectedRow();
-        }
-    }
-    //Èô³É¹¦É¾³ıÊı¾İ£¬ÔòÖØÖÃÍ¼±í
+    nowData = tables[kind]->GetSelectedRow();
+    //è‹¥æˆåŠŸåˆ é™¤æ•°æ®ï¼Œåˆ™é‡ç½®å›¾è¡¨
     if (DataManager::Instance()->DeleteData(nowData))
     {
-        for (auto iter = tables.begin(); iter != tables.end(); iter++)
-        {
-            if (iter->kind == kind)
-            {
                 vector<vector<wstring>> newList;
                 vector<vector<wstring>> newList2;
-                newList.push_back({ L"ÎÄ¼şÃû",L"ĞĞÊı",L"¾ùÖµ" ,L"·½²î" });
+                newList.push_back({ L"name",L"rowCount",L"mean" ,L"variance" });
                 newList2 = DataManager::Instance()->GetInitialData();
                 for (const auto& innerVector : newList2)
                 {
                     newList.push_back(innerVector);
                 }
-                iter->table->SetData(newList);
-                iter->table->ResetTable();
-            }
-        }
+                tables[kind]->SetData(newList);
+                tables[kind]->ResetTable();
     }
     else
     {
-        MessageBox(GetHWnd(), L"É¾³ıÊ§°Ü!", L"DELETE", MB_OK);
+        MessageBox(GetHWnd(), "Failed!", "DELETE", MB_OK);
     }
 }
-void UIManager::ProcessSelectedData(WindowsKind kind,int maxorder)
-{   
-    maxOrder = maxorder;
-    if (nowProcessData == -1)
-    {
-        //µÃµ½Ñ¡ÖĞÊı¾İ
-        for (auto iter = tables.begin(); iter != tables.end(); iter++)
-        {
-            if (iter->kind == kind)
-            {
-                nowProcessData = iter->table->GetSelectedRow();
-                if (nowProcessData == -1)
-                {
-                    MessageBox(GetHWnd(), L"ÇëÑ¡ÔñÊı¾İ!", L"ERROR", MB_OK);
-                }
-            }
-        }
-    }
-    DataManager::Instance()->ProcessData(nowProcessData, maxOrder);
-
-}
-void UIManager::SetNowProcessData()
-{
-    nowProcessData = -1;
-}
-
 void UIManager::Init()
 {
     instance = new UIManager();
 }
 
+//
 void UIManager::Run()
 {
-
-    //easyXÊó±êÊÂ¼ş
+    //easyXé¼ æ ‡äº‹ä»¶
     ExMessage msg;
-    if (peekmessage(&msg)&& NowWindow!= loadWindow)
+    if (peekmessage(&msg))
     {
         switch (msg.message)
         {
@@ -361,27 +290,29 @@ void UIManager::Run()
         }
     }
 
-         //¸ù¾İµ±Ç°½çÃæÅĞ¶ÏÔËĞĞÄÄÒ»´¦µÄUI¿Ø¼şÊÂ¼ş
+         //æ ¹æ®å½“å‰ç•Œé¢åˆ¤æ–­è¿è¡Œå“ªä¸€å¤„çš„UIæ§ä»¶äº‹ä»¶
         switch (NowWindow)
         {
         case loadWindow:
-            for (auto iter = labels.begin(); iter != labels.end(); iter++)
-            {
-                if (iter->kind == loadWindow)
-                {
-                    iter->label->Draw();
-                }
-            }
+            labels[10]->Draw();
             break;
         case loginWindow:
-            for (auto iter = labels.begin(); iter != labels.end(); iter++)
+            cleardevice();
+            labels[0]->Draw();
+            labels[1]->Draw();
+         
+            if (textBoxs[0]->GetSelect())
             {
-                if (iter->kind == loginWindow)
-                {
-                    iter->label->Draw();
-                }
+                textBoxs[0]->UpdateCursor();
             }
-            for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+            textBoxs[0]->Draw();
+
+            if (textBoxs[1]->GetSelect())
+            {
+                textBoxs[1]->UpdateCursor();
+            }
+            textBoxs[1]->Draw();
+          /*  for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
             {
                 if (iter->kind == loginWindow)
                 {
@@ -391,62 +322,68 @@ void UIManager::Run()
                     }
                     iter->textBox->Draw();
                 }
-            }
-            for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
-            {
-                if (iter->kind == loginWindow)
-                {
-                    iter->button->Draw();
-                }
-            }
+            }*/
+            buttons[0]->Draw();
+            buttons[1]->Draw();
+            buttons[2]->Draw();
             break;
         case mainWindow:
-            for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
+            cleardevice();
+           /* for (auto iter = labels.begin(); iter != labels.end(); iter++)
             {
                 if (iter->kind == mainWindow)
                 {
-                    iter->button->Draw();
+                    iter->label->Draw();
                 }
-            }
-            for (auto iter = tables.begin(); iter != tables.end(); iter++)
+            }*/
+          /*  for (auto iter = textBoxs.begin(); iter != textBoxs.end(); iter++)
+            {
+                if (iter->kind == mainWindow)
+                {
+                    if (iter->textBox->GetSelect())
+                    {
+                        iter->textBox->UpdateCursor();
+                    }
+                    iter->textBox->Draw();
+                }
+            }*/
+
+            buttons[3]->Draw();
+            buttons[4]->Draw();
+            buttons[5]->Draw();
+            buttons[6]->Draw();
+            buttons[7]->Draw();
+
+            tables[0]->Draw();
+          /*  for (auto iter = tables.begin(); iter != tables.end(); iter++)
             {
                 if (iter->kind == mainWindow)
                 {
                     iter->table->Draw();
                 }
-            }
+            }*/
             break;  
         case processWindow:
-             clearrectangle(50, 400, 440, 800);
-             ShowFileInfo();
-             for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
-             {
-                if (iter->kind == processWindow)
+                cleardevice();
+             /*   for (auto iter = labels.begin(); iter != labels.end(); iter++)
                 {
-                   iter->button->Draw();
-                 }
-             }
-             break;
+                    if (iter->kind == mainWindow)
+                    {
+                        iter->label->Draw();
+                    }
+                }*/
+
+              /*  for (auto iter = tables.begin(); iter != tables.end(); iter++)
+                {
+                    if (iter->kind == mainWindow)
+                    {
+                        iter->table->Draw();
+                    }
+                }*/
+                break;
         case showProcessWindow:
-            for (auto iter = tables.begin(); iter != tables.end(); iter++)
-            {
-                if (iter->kind == showProcessWindow)
-                {
-                    iter->table->Draw();
-                }
-            }
-            for (auto iter = buttons.begin(); iter != buttons.end(); iter++)
-            {
-                if (iter->kind == showProcessWindow)
-                {
-                    iter->button->Draw();
-                }
-            }
                 break;
         default:
             break;
     }
-
 }
-
-
